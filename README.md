@@ -1,6 +1,8 @@
-# DSCI-532_2025_7_amazon_marketting
+# Amazon Prime Customer Dashboard
 
+## Project Overview
 
+This project aims to develop an interactive dashboard that provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users. The dashboard is designed for Amazon Prime’s Customer Engagement and Marketing Teams to analyze key trends and identify factors influencing user retention. By leveraging engagement metrics and purchase history, the dashboard helps in developing targeted marketing strategies to improve subscription renewal rates and overall customer satisfaction.
 
 ## Contributing
 
