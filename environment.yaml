@@ -9,4 +9,7 @@ dependencies:
   - altair-all= 5.4.*
   - pandas>= 2.2
   - matplotlib>= 3.10 
+  - dash=2.16.1
+  - dash-bootstrap-components=1.5.0
+  
 
