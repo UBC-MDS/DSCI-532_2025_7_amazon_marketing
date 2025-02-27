@@ -1,5 +1,7 @@
 from dash import Dash, html
+from data import processed_data
 
+processed_data()
 
 # Initiatlize the app
 app = Dash(__name__)
