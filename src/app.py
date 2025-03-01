@@ -1,9 +1,23 @@
 from dash import Dash, html, dcc, Input, Output, callback, dash_table
-from data import processed_data
+# from data import processed_data
 import dash_bootstrap_components as dbc
+from datetime import datetime
 import pandas as pd
 
 # Process and load the data directly
+def processed_data():
+    # Load the raw data
+    data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
+                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
+                        dayfirst=True, index_col=0)
+
+    # Process the data
+    data["Age"] = (pd.Timestamp.today() - data["Date of Birth"]).dt.days // 365
+    data["Months Till Expire"] = ((data["Membership End Date"] - pd.Timestamp.today()).dt.days // 30).clip(lower=0)
+    
+    # Return the processed DataFrame
+    return data
+
 df = processed_data()
 
 # Count users
@@ -14,7 +28,6 @@ expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
 
 
-
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
@@ -22,59 +35,96 @@ server = app.server
 # Define the columns for the DataTable (dynamically generated)
 columns = [{"name": col.replace("_", " ").title(), "id": col} for col in expiring_members.columns]
 
-# Layout 
+
+# Layout
 app.layout = dbc.Container(
     [
+        # Store component to keep track of active filters
+        dcc.Store(id="active-filter-store", data={"renewal": [], "gender": [], "date_range": []}),
+
         dbc.Row(
             [
                 # Left column for filters
                 dbc.Col(
                     [
-                        # title
+                        # Title
                         html.H1("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "30px"}),
 
-                        # renewal button
+                        # Renewal checkboxes 
                         html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
-                        html.Div(
-                            [
-                                dbc.Button("Manual", id="manual-renew", className="me-1", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("Auto Renew", id="auto-renew", style={"marginBottom": "50px", "width": "100%", "backgroundColor": "#FF9900"}),
-                            ]
-
-                        ),    
-                        #gender button
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
-                        html.Div(
-                            [
-                                dbc.Button("Male", id="male-gender", className="me-1", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("Female", id="female-gender", style={"marginBottom": "50px", "width": "100%", "backgroundColor": "#FF9900"}),
-                            ]
+                        dbc.Checklist(
+                            id="renewal-checklist",
+                            options=[
+                                {"label": "Manual", "value": "manual-renew"},
+                                {"label": "Auto Renew", "value": "auto-renew"},
+                            ],
+                            value=[],
+                            inline=False,  
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center",  
+                                "fontSize": "20px",  
+                                "marginBottom": "50px"
+                            }
                         ),
-                        #age range slider
+
+                        # Gender checkboxes 
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
+                        dbc.Checklist(
+                            id="gender-checklist",
+                            options=[
+                                {"label": "Male", "value": "male-gender"},
+                                {"label": "Female", "value": "female-gender"},
+                            ],
+                            value=[],
+                            inline=False, 
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center", 
+                                "fontSize": "20px", 
+                                "marginBottom": "50px"
+                            }
+                        ),
+
+                        # Age range slider
                         html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
                         html.Div(
                             dcc.RangeSlider(
-                                id='age-range-filter',
+                                id="age-range-filter",
                                 min=0,
                                 max=100,
                                 step=10,
+                                value=[0, 100],  
                             ),
-                            style={"marginBottom": "50px"} 
+                            style={"marginBottom": "50px"}
                         ),
-                        # date range buttons
+
+                        # Date range checkboxes 
                         html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
-                        html.Div(
-                            [
-                                dbc.Button("1 Month", id="1-month-filter", className="me-1", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("3 Month", id="3-month-filter", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("6 Month", id="6-month-filter", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("All Time", id="All-time-filter", style={"marginBottom": "20px", "width": "100%", "backgroundColor": "#FF9900"}),
-                            ]
+                        dbc.Checklist(
+                            id="date-range-checklist",
+                            options=[
+                                {"label": "1 Month", "value": "1-month-filter"},
+                                {"label": "3 Month", "value": "3-month-filter"},
+                                {"label": "6 Month", "value": "6-month-filter"},
+                                {"label": "All Time", "value": "All-time-filter"},
+                            ],
+                            value=[],
+                            inline=False,  
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center",  
+                                "fontSize": "20px",  
+                                "marginBottom": "50px"
+                            }
                         ),
                     ],
-                    width=2,  
+                    width=2,
                 ),
-                # Middle column 
+                # Middle column
                 dbc.Col(
                     [
                         # Row for the cards
@@ -106,6 +156,7 @@ app.layout = dbc.Container(
                                 ),
                             ]
                         ),
+
                         # Table for expiring members
                         html.H4("Expiring Members", style={"marginTop": "30px"}),
                         dash_table.DataTable(
@@ -120,23 +171,39 @@ app.layout = dbc.Container(
                             style_cell={'textAlign': 'left'},  # Align text in the cells to the left
                         ),
                     ],
-                    width=5,  
-                ),
-
-                # Right column 
-                dbc.Col(
-                    [
-                        # Placeholder for right column 
-                        # Graph Here
-                        # ...
-   
-                    ],
-                    width=5,  
+                    width=5,
                 ),
             ]
-        )
+        ),
+        dbc.Row(
+            dbc.Col(
+                html.Div(
+                    [
+                        html.P(
+                            "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
+                            style={"fontSize": "16px", "marginTop": "1px", "textAlign": "center"}
+                        ),
+                        html.P(
+                            "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
+                            style={"fontSize": "16px", "textAlign": "center"}
+                        ),
+                        html.P(
+                            html.A("View the repository on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing", target="_blank"),
+                            style={"fontSize": "16px", "textAlign": "center"}
+                        ),
+                        html.P(
+                            f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
+                            style={"fontSize": "16px", "textAlign": "center"}
+                        ),
+                    ], 
+                    style={"marginBottom": "20px"},
+                ),
+                width=12,
+            )
+        ),
     ],
     fluid=True,
+    
 )
 
 
@@ -145,24 +212,25 @@ app.layout = dbc.Container(
     [Output("current-number-placeholder", "children"),
      Output("expiring-number-placeholder", "children"),
      Output("expiring-table-placeholder", "data")],
-    [Input("manual-renew", "n_clicks"),
-     Input("auto-renew", "n_clicks"),
-     Input("male-gender", "n_clicks"),
-     Input("female-gender", "n_clicks"),
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
      Input("age-range-filter", "value"),
-     Input("1-month-filter", "n_clicks"),
-     Input("3-month-filter", "n_clicks"),
-     Input("6-month-filter", "n_clicks"),
-     Input("All-time-filter", "n_clicks")]
+     Input("date-range-checklist", "value")]
 )
-def update_users_and_table(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+def update_users_and_table(renewal_values, gender_values, age_range, date_range_values):
     # Start with the entire dataset
     gender_filtered = df
 
+    # Apply renewal filter
+    if "manual-renew" in renewal_values:
+        gender_filtered = gender_filtered[gender_filtered["Renewal Status"] == "Manual"]
+    if "auto-renew" in renewal_values:
+        gender_filtered = gender_filtered[gender_filtered["Renewal Status"] == "Auto-renew"]
+
     # Apply gender filter
-    if male_clicks:
+    if "male-gender" in gender_values:
         gender_filtered = gender_filtered[gender_filtered["Gender"] == "Male"]
-    elif female_clicks:
+    if "female-gender" in gender_values:
         gender_filtered = gender_filtered[gender_filtered["Gender"] == "Female"]
 
     # Apply age range filter
@@ -170,14 +238,14 @@ def update_users_and_table(manual_clicks, auto_renew_clicks, male_clicks, female
         gender_filtered = gender_filtered[(gender_filtered["Age"] >= age_range[0]) & (gender_filtered["Age"] <= age_range[1])]
 
     # Apply expiration date range filter
-    if month1:
+    if "1-month-filter" in date_range_values:
         gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 1]
-    elif month3:
+    if "3-month-filter" in date_range_values:
         gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 3]
-    elif month6:
+    if "6-month-filter" in date_range_values:
         gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 6]
-    elif all_time:
-        gender_filtered = gender_filtered  # No filter for all time
+    if "All-time-filter" in date_range_values:
+        pass  # No filter for all time
 
     # Calculate current and expired users
     current_users = gender_filtered[gender_filtered["Months Till Expire"] > 0].index.nunique()
@@ -193,17 +261,12 @@ def update_users_and_table(manual_clicks, auto_renew_clicks, male_clicks, female
 # callback for rating overtime graph
 @callback(
     Output("rating-overtime-graph-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
+     Input("age-range-filter", "value"),
+     Input("date-range-checklist", "value")]
 )
-def update_rating_overtime_graph(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+def update_rating_overtime_graph(renewal_values, gender_values, age_range, date_range_values):
 
     return updated_rating_overtime_graph
 
@@ -211,17 +274,12 @@ def update_rating_overtime_graph(manual_clicks, auto_renew_clicks, male_clicks, 
 # callback for purchase history graph
 @callback(
     Output("purchase-history-graph-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
+     Input("age-range-filter", "value"),
+     Input("date-range-checklist", "value")]
 )
-def update_rating_overtime_graph(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+def update_rating_overtime_graph(renewal_values, gender_values, age_range, date_range_values):
 
     return updated_purchase_hirtory_graph
 
@@ -229,21 +287,16 @@ def update_rating_overtime_graph(manual_clicks, auto_renew_clicks, male_clicks, 
 # callback for user engagement graph
 @callback(
     Output("user-engagement-graph-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
+     Input("age-range-filter", "value"),
+     Input("date-range-checklist", "value")]
 )
-def update_user_engagement_graph(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+def update_user_engagement_graph(renewal_values, gender_values, age_range, date_range_values):
 
     return updated_user_engagement_graph
 
 
-
 if __name__ == "__main__":
     app.run(debug=True)
+
