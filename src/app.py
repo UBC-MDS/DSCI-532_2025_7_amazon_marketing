@@ -1,8 +1,18 @@
 from dash import Dash, html, dcc, Input, Output, callback
 from data import processed_data
 import dash_bootstrap_components as dbc
+import pandas as pd
 
-processed_data()
+# Process and load the data directly
+df = processed_data()
+
+# Count users
+current_users = df[df["Months Till Expire"] > 0]["User ID"].nunique()
+expired_users = df[df["Months Till Expire"] == 0]["User ID"].nunique()
+
+# Filter expiring members
+expiring_members = df[["User ID", "Email Address", "Membership End Date"]]
+
 
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -63,9 +73,38 @@ app.layout = dbc.Container(
                 # Middle column 
                 dbc.Col(
                     [
-                        # Placeholder for middle columns 
-                        # Table here
-                        # ...
+                        # Row for the cards
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    dbc.Card(
+                                        dbc.CardBody(
+                                            [
+                                                html.H4("Current Users", className="card-title"),
+                                                html.H2(current_users, className="card-text")
+                                            ]
+                                        ),
+                                        color="success", inverse=True
+                                    ),
+                                    width=6
+                                ),
+                                dbc.Col(
+                                    dbc.Card(
+                                        dbc.CardBody(
+                                            [
+                                                html.H4("Expired Users", className="card-title"),
+                                                html.H2(expired_users, className="card-text")
+                                            ]
+                                        ),
+                                        color="danger", inverse=True
+                                    ),
+                                    width=6
+                                ),
+                            ]
+                        ),
+                        # Table for expiring members
+                        html.H4("Expiring Members", style={"marginTop": "30px"}),
+                        dbc.Table.from_dataframe(expiring_members, striped=True, bordered=True, hover=True),
 
                     ],
                     width=5,  
