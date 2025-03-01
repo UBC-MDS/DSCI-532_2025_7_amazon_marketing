@@ -12,5 +12,9 @@ dependencies:
   - dash=2.16.1
   - dash-bootstrap-components=1.5.0
   - dash-table
+  - pip
+  - pip:
+      - dash-vega-components
+  
   
 
