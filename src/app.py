@@ -7,11 +7,11 @@ import pandas as pd
 df = processed_data()
 
 # Count users
-current_users = df[df["Months Till Expire"] > 0]["User ID"].nunique()
-expired_users = df[df["Months Till Expire"] == 0]["User ID"].nunique()
+current_users = df[df["Months Till Expire"] > 0].index.nunique()
+expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 
 # Filter expiring members
-expiring_members = df[["User ID", "Email Address", "Membership End Date"]]
+expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
 
 
 # Initialize the app
