@@ -5,7 +5,6 @@ import dash_vega_components as dvc
 import altair as alt
 import pandas as pd
 
-data = processed_data()
 
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -26,8 +25,12 @@ app.layout = dbc.Container(
                         html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
                         html.Div(
                             [
-                                dbc.Button("Manual", id="manual-renew", className="me-1", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("Auto Renew", id="auto-renew", style={"marginBottom": "50px", "width": "100%", "backgroundColor": "#FF9900"}),
+                                dcc.Checklist(
+                                    id='renew-filter', 
+                                    options=["Auto-renew", "Manual"],
+                                    value=["Auto-renew", "Manual"],
+                                    style={"marginBottom": "50px"},
+                                )
                             ]
 
                         ),    
@@ -35,8 +38,12 @@ app.layout = dbc.Container(
                         html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
                         html.Div(
                             [
-                                dbc.Button("Male", id="male-gender", className="me-1", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("Female", id="female-gender", style={"marginBottom": "50px", "width": "100%", "backgroundColor": "#FF9900"}),
+                                dcc.Checklist(
+                                    id='gender-filter',
+                                    options=["Male", "Female"],
+                                    value=["Male", "Female"],
+                                    style={"marginBottom": "50px"},
+                                )
                             ]
                         ),
                         #age range slider
@@ -47,6 +54,7 @@ app.layout = dbc.Container(
                                 min=0,
                                 max=100,
                                 step=10,
+                                value=[10, 100],
                             ),
                             style={"marginBottom": "50px"} 
                         ),
@@ -54,10 +62,15 @@ app.layout = dbc.Container(
                         html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
                         html.Div(
                             [
-                                dbc.Button("1 Month", id="1-month-filter", className="me-1", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("3 Month", id="3-month-filter", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("6 Month", id="6-month-filter", style={"marginBottom": "10px", "width": "100%", "backgroundColor": "#FF9900"}),
-                                dbc.Button("All Time", id="All-time-filter", style={"marginBottom": "20px", "width": "100%", "backgroundColor": "#FF9900"}),
+                                dcc.RadioItems(
+                                    id="date-filter",
+                                    options=[
+                                        {"label": "1 Month", "value":1},
+                                        {"label": "3 Month", "value":3},
+                                        {"label": "6 Month", "value":6},
+                                        {"label": "All Time", "value": 999}],
+                                    value=999,
+                                ),
                             ]
                         ),
                     ],
@@ -92,78 +105,77 @@ app.layout = dbc.Container(
     fluid=True,
 )
 
-# callback for current users number 
-@callback(
-    Output("current-number-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
-)
-def update_current_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+# # callback for current users number 
+# @callback(
+#     Output("current-number-placeholder", "children"),
+#     Input("manual-renew", "n_clicks"),
+#     Input("auto-renew", "n_clicks"),
+#     Input("male-gender", "n_clicks"),
+#     Input("female-gender", "n_clicks"),
+#     Input("age-range-filter", "value"),
+#     Input("1-month-filter", "n_clicks"),
+#     Input("3-month-filter", "n_clicks"),
+#     Input("6-month-filter", "n_clicks"),
+#     Input("All-time-filter", "n_clicks"),
+# )
+# def update_current_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
 
-    return updated_current_number
+#     return updated_current_number
 
-# callback for expiring users number 
-@callback(
-    Output("expiring-number-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
-)
-def update_expiring_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+# # callback for expiring users number 
+# @callback(
+#     Output("expiring-number-placeholder", "children"),
+#     Input("manual-renew", "n_clicks"),
+#     Input("auto-renew", "n_clicks"),
+#     Input("male-gender", "n_clicks"),
+#     Input("female-gender", "n_clicks"),
+#     Input("age-range-filter", "value"),
+#     Input("1-month-filter", "n_clicks"),
+#     Input("3-month-filter", "n_clicks"),
+#     Input("6-month-filter", "n_clicks"),
+#     Input("All-time-filter", "n_clicks"),
+# )
+# def update_expiring_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
 
-    return expiring_number
+#     return expiring_number
 
-# callback for expiring members table
-@callback(
-    Output("expiring-table-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
-)
-def update_expiring_members_table(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+# # callback for expiring members table
+# @callback(
+#     Output("expiring-table-placeholder", "children"),
+#     Input("manual-renew", "n_clicks"),
+#     Input("auto-renew", "n_clicks"),
+#     Input("male-gender", "n_clicks"),
+#     Input("female-gender", "n_clicks"),
+#     Input("age-range-filter", "value"),
+#     Input("1-month-filter", "n_clicks"),
+#     Input("3-month-filter", "n_clicks"),
+#     Input("6-month-filter", "n_clicks"),
+#     Input("All-time-filter", "n_clicks"),
+# )
+# def update_expiring_members_table(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
 
-    return updated_expiring_members_table
+#     return updated_expiring_members_table
+
 
 
 # callback for rating overtime graph
 @callback(
     Output("rating_graph", "spec"),
-    # Input("manual-renew", "n_clicks"),
-    # Input("auto-renew", "n_clicks"),
-    # Input("male-gender", "n_clicks"),
-    # Input("female-gender", "n_clicks"),
+    Input("renew-filter", "value"),
+    Input("gender-filter", "value"),
     Input("age-range-filter", "value"),
-    # Input("1-month-filter", "n_clicks"),
-    # Input("3-month-filter", "n_clicks"),
-    # Input("6-month-filter", "n_clicks"),
-    # Input("All-time-filter", "n_clicks"),
+    Input("date-filter", "value"),
 )
-def update_rating_graph(age_range):
-    # age_l, age_h = age_range
-    # df = data[data['Gender'].isin(gender)]
-    # df = data[data['Renewal Status'].isin(renew)]
-    # df = data[data['Age'].between(age_l, age_h)]
-    # df = data[data['Months Till Expire'] <= expire]
-    rating_graph = alt.Chart(data).transform_density(
+
+def update_rating_graph(renew, gender, age_range, date_range):
+    data = processed_data()
+    df = data[
+        (data['Gender'].isin(gender)) &
+        (data['Renewal Status'].isin(renew)) &
+        (data['Age'].between(age_range[0], age_range[1])) &
+        (data['Months Till Expire'] <= date_range)
+    ]
+    rating_graph = alt.Chart(df).transform_density(
         'Feedback/Ratings',
         groupby=['Gender'],
         as_=['Feedback/Ratings', 'density'],
@@ -184,23 +196,20 @@ def update_rating_graph(age_range):
 # callback for purchase history graph
 @callback(
     Output("purchase_graph", "spec"),
-    # Input("manual-renew", "n_clicks"),
-    # Input("auto-renew", "n_clicks"),
-    # Input("male-gender", "n_clicks"),
-    # Input("female-gender", "n_clicks"),
+    Input("renew-filter", "value"),
+    Input("gender-filter", "value"),
     Input("age-range-filter", "value"),
-    # Input("1-month-filter", "n_clicks"),
-    # Input("3-month-filter", "n_clicks"),
-    # Input("6-month-filter", "n_clicks"),
-    # Input("All-time-filter", "n_clicks"),
+    Input("date-filter", "value"),
 )
-def update_purchase_graph(age_range):
-    # age_l, age_h = age_range
-    # df = data[data['Gender'].isin(gender)]
-    # df = data[data['Renewal Status'].isin(renew)]
-    # df = data[data['Age'].between(age_l, age_h)]
-    # df = data[data['Months Till Expire'] <= expire]
-    purchase_graph = alt.Chart(data).mark_bar().encode(
+def update_purchase_graph(renew, gender, age_range, date_range):
+    data = processed_data()
+    df = data[
+        (data['Gender'].isin(gender)) &
+        (data['Renewal Status'].isin(renew)) &
+        (data['Age'].between(age_range[0], age_range[1])) &
+        (data['Months Till Expire'] <= date_range)
+    ]
+    purchase_graph = alt.Chart(df).mark_bar().encode(
         x=alt.X('Purchase History', axis=alt.Axis(labelAngle=0)),
         y='count()',
         color='Gender',
@@ -215,23 +224,20 @@ def update_purchase_graph(age_range):
 # callback for user engagement graph
 @callback(
     Output("engagement_graph", "spec"),
-    # Input("manual-renew", "n_clicks"),
-    # Input("auto-renew", "n_clicks"),
-    # Input("male-gender", "n_clicks"),
-    # Input("female-gender", "n_clicks"),
+    Input("renew-filter", "value"),
+    Input("gender-filter", "value"),
     Input("age-range-filter", "value"),
-    # Input("1-month-filter", "n_clicks"),
-    # Input("3-month-filter", "n_clicks"),
-    # Input("6-month-filter", "n_clicks"),
-    # Input("All-time-filter", "n_clicks"),
+    Input("date-filter", "value"),
 )
-def update_engagement_graph(age_range):
-    # age_l, age_h = age_range
-    # df = data[data['Gender'].isin(gender)]
-    # df = data[data['Renewal Status'].isin(renew)]
-    # df = data[data['Age'].between(age_l, age_h)]
-    # df = data[data['Months Till Expire'] <= expire]
-    engagement_graph = alt.Chart(data).mark_bar().encode(
+def update_engagement_graph(renew, gender, age_range, date_range):
+    data = processed_data()
+    df = data[
+        (data['Gender'].isin(gender)) &
+        (data['Renewal Status'].isin(renew)) &
+        (data['Age'].between(age_range[0], age_range[1])) &
+        (data['Months Till Expire'] <= date_range)
+    ]
+    engagement_graph = alt.Chart(df).mark_bar().encode(
         x=alt.X('Engagement Metrics', axis=alt.Axis(labelAngle=0)),
         y='count()',
         color='Gender',
@@ -245,4 +251,6 @@ def update_engagement_graph(age_range):
 
 
 if __name__ == "__main__":
-    app.server.run(debug=True)
+    app.server.run(debug=True, port=8081)
+
+
