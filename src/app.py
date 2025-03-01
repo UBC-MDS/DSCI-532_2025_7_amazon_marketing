@@ -372,4 +372,4 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     return engagement_graph
 
 if __name__ == "__main__":
-    app.server.run()
+    app.server.run(debug=True, port=8081)
