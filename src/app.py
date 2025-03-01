@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Input, Output, callback
+from dash import Dash, html, dcc, Input, Output, callback, dash_table
 from data import processed_data
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -17,6 +17,9 @@ expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_in
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
+
+# Define the columns for the DataTable (dynamically generated)
+columns = [{"name": col.replace("_", " ").title(), "id": col} for col in expiring_members.columns]
 
 # Layout 
 app.layout = dbc.Container(
@@ -104,8 +107,17 @@ app.layout = dbc.Container(
                         ),
                         # Table for expiring members
                         html.H4("Expiring Members", style={"marginTop": "30px"}),
-                        dbc.Table(id="expiring-table-placeholder", striped=True, bordered=True, hover=True), 
-
+                        dash_table.DataTable(
+                            id="expiring-table-placeholder",
+                            columns=columns,  # Set the columns dynamically from the filtered DataFrame
+                            data=expiring_members.to_dict('records'),  # Convert filtered DataFrame to records for DataTable
+                            page_size=20, 
+                            style_table={'height': '700px', 'overflowY': 'auto'},  # Set a larger scrollable height
+                            filter_action="native",  # Allow column filtering
+                            sort_action="native",  # Allow sorting by column
+                            page_action="native",  # Remove pagination and show all rows
+                            style_cell={'textAlign': 'left'},  # Align text in the cells to the left
+                        ),
                     ],
                     width=5,  
                 ),
@@ -173,7 +185,16 @@ def update_users_and_table(manual_clicks, auto_renew_clicks, male_clicks, female
     expiring_members = gender_filtered[["Name", "Email Address", "Membership End Date"]].reset_index()
 
     # Return the updated values
-    return current_users, expired_users, dbc.Table.from_dataframe(expiring_members, striped=True, bordered=True, hover=True)
+    return current_users, expired_users, dash_table.DataTable(
+        columns=columns,
+        data=expiring_members.to_dict('records'),
+        page_size=20,
+        style_table={'height': '700px', 'overflowY': 'auto'},
+        filter_action="native",
+        sort_action="native",
+        page_action="native",
+        style_cell={'textAlign': 'left'},
+    )
 
 
 # callback for rating overtime graph
