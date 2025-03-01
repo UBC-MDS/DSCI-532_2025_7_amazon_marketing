@@ -12,7 +12,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 # Process and load the data directly
 def processed_data():
     # Load the raw data
-    data = pd.read_csv("data/raw/amazon_prime_users.csv", sep=";", 
+    data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
                        dayfirst=True)
 
@@ -161,8 +161,8 @@ app.layout = dbc.Container(
                         html.H2("Expiring Members", style={"marginTop": "50px"}),
                         dash_table.DataTable(
                             id="expiring-table-placeholder",
-                            columns=columns,  # Set the columns dynamically from the filtered DataFrame
-                            data=expiring_members.to_dict('records'),  # Convert filtered DataFrame to records for DataTable
+                            columns=[],  # Set the columns dynamically from the filtered DataFrame
+                            data=[],  # Convert filtered DataFrame to records for DataTable
                             page_size=20, 
                             style_table={'height': '700px', 'overflowY': 'auto'},  # Set a larger scrollable height
                             filter_action="native",  # Allow column filtering
