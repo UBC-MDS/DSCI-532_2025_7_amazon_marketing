@@ -26,7 +26,6 @@ def processed_data():
 
 df = processed_data()
 
-
 # Define the layout of the app
 app.layout = dbc.Container(
     [
@@ -36,7 +35,10 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Title
+
                         html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "30px", "marginBottom": "30px"}),
+
+
 
                         # Renewal checkboxes 
                         html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
@@ -90,7 +92,9 @@ app.layout = dbc.Container(
                         ),
 
                         # Date range RadioItems 
+
                         html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
+
                         dbc.RadioItems(
                             id="date-range-checklist",
                             options=[
@@ -128,7 +132,9 @@ app.layout = dbc.Container(
                                         ),
                                         color="success", 
                                         inverse=True, 
+
                                         style={"marginTop": "30px"}
+
                                     ),
                                     width=6
                                 ),
@@ -142,7 +148,9 @@ app.layout = dbc.Container(
                                         ),
                                         color="danger", 
                                         inverse=True,
+
                                         style={"marginTop": "30px"}
+
                                     ),
                                     width=6
                                 ),
@@ -150,7 +158,7 @@ app.layout = dbc.Container(
                         ),
 
                         # Table for expiring members
-                        html.H4("Expiring Members", style={"marginTop": "30px"}),
+                        html.H2("Expiring Members", style={"marginTop": "50px"}),
                         dash_table.DataTable(
                             id="expiring-table-placeholder",
                             columns=[],  # Set the columns dynamically from the filtered DataFrame
@@ -172,6 +180,7 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Placeholder for right column
+
                         html.H4("User Ratings Overview",
                                 style={"marginTop": "20px", "textAlign": "left", 'paddingLeft':'30px', 'marginBottom':  '10px'}),
                         dvc.Vega(id='rating_graph', spec={}),
@@ -180,6 +189,7 @@ app.layout = dbc.Container(
                         dvc.Vega(id='purchase_graph', spec={}),
                         html.H4("User Engagement Levels", style={
                                 "marginTop": "20px", "textAlign": "left", 'paddingLeft': '30px', 'marginBottom':  '10px'}),
+
                         dvc.Vega(id='engagement_graph', spec={})
                     ],
                     width=5,
@@ -192,6 +202,7 @@ app.layout = dbc.Container(
                     [
                         html.P(
                             "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
+
                             style={"fontSize": "14px", "marginTop": "5px", "textAlign": "center"}
                         ),
                         html.P(
@@ -205,6 +216,7 @@ app.layout = dbc.Container(
                         html.P(
                             f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
                             style={"fontSize": "14px", "textAlign": "center"}
+
                         ),
                     ], 
                     style={"marginBottom": "14px"},
@@ -284,6 +296,7 @@ def update_rating_graph(renew, gender, age_range, date_range):
     ).configure_legend(
         labelFontSize = 14,  
         titleFontSize = 16  
+
     ).interactive().to_dict()
 
     return rating_graph
@@ -304,12 +317,14 @@ def update_purchase_graph(renew, gender, age_range, date_range):
         (df['Age'].between(age_range[0], age_range[1])) &
         (df['Months Till Expire'] <= date_range)
     ]
+
     purchase_graph = alt.Chart(df_filtered).mark_bar(size=50).encode(
         x=alt.X('Purchase History', axis=alt.Axis(labelAngle=0), title="Product Categories"),
         y=alt.Y('count()', title="Count"),
         color=alt.Color('Gender', legend=alt.Legend(symbolSize=200)),
         tooltip=['count()']
     ).properties(
+
         width=375,
         height=200
     ).configure_axis(
@@ -318,6 +333,7 @@ def update_purchase_graph(renew, gender, age_range, date_range):
     ).configure_legend(
         labelFontSize=14,
         titleFontSize=16
+
     ).interactive().to_dict()
     return purchase_graph
 
@@ -336,12 +352,14 @@ def update_engagement_graph(renew, gender, age_range, date_range):
         (df['Age'].between(age_range[0], age_range[1])) &
         (df['Months Till Expire'] <= date_range)
     ]
+    
     engagement_graph = alt.Chart(df_filtered).mark_bar(size=50).encode(
         x=alt.X('Engagement Metrics', axis=alt.Axis(labelAngle=0),title="Engagment Level"),
         y=alt.Y('count()', title='Count'),
         color=alt.Color('Gender', legend=alt.Legend(symbolSize=200)),
         tooltip=['count()']
     ).properties(
+
         width=375,
         height=200
     ).configure_axis(
@@ -350,8 +368,9 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     ).configure_legend(
         labelFontSize=14,
         titleFontSize=16
+
     ).interactive().to_dict()
     return engagement_graph
 
 if __name__ == "__main__":
-    app.server.run(debug=True, port=8081)
+    app.server.run()
