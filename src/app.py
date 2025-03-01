@@ -8,6 +8,7 @@ import altair as alt
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
 
 # Process and load the data directly
 def processed_data():
@@ -372,4 +373,4 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     return engagement_graph
 
 if __name__ == "__main__":
-    app.server.run(debug=True, port=8081)
+    app.server.run()
