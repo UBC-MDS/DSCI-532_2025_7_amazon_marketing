@@ -11,6 +11,7 @@ Welcome to the Amazon Prime Customer Dashboard project! This interactive dashboa
 The dashboard allows you to explore and visualize data related to:
 
 - **User Engagement**: Dive into metrics that show how users interact with Amazon Prime.
+- **User Preferences**: Understand user preferences such as user ratings and product categories of their recent purchases.
 - **Subscription Renewal Behavior**: Understand patterns in subscription renewal and churn.
 
 This tool is perfect for marketing teams and anyone interested in understanding user behavior and making data-driven decisions.
@@ -19,7 +20,7 @@ You can view the live dashboard at the following link: [Deployed Dashboard](http
 
 ### Support
 
-If you encounter any issues or need support, please open an issue on our GitHub repository, and we will be happy to assist you.
+If you encounter any issues or need support, please open an [issue](https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing/issues) on our GitHub repository, and we will be happy to assist you.
 
 ## For Contributors
 
@@ -49,8 +50,7 @@ If you're interested in running the app locally or contributing to its developme
 
 ## Contributing
 
-Interested in contributing? Check out the [CONTRIBUTING.md](https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing/blob/main/CONTRIBUTING.md) guidelines. Please note that this project is released with a [Code of Conduct](https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing/blob/main/CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
+Interested in contributing? Check out our [Contributing Guidlines](https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing/blob/main/CONTRIBUTING.md). Please note that this project is released with a [Code of Conduct](https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing/blob/main/CODE_OF_CONDUCT.md). By contributing to this project, you agree to abide by its terms.
 
 ## License
-
-`DSCI-532_2025_7_amazon_marketting` was created by Daduica Julian, Yixuan Gao, and Mavis Wong. It is licensed under the terms of the MIT license.
+`DSCI-532_2025_7_amazon_marketing` was created by Daduica Julian ([@jdaduica](https://github.com/jdaduica)), Yixuan Gao ([@yixuangaoclara](https://github.com/yixuangaoclara)), and Mavis Wong([@MavisWong295](https://github.com/MavisWong295)). It is licensed under the terms of the **MIT license**.
