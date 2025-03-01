@@ -1,4 +1,5 @@
 from dash import Dash, html, dcc, Input, Output, callback, dash_table
+
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from datetime import datetime
@@ -9,6 +10,7 @@ import altair as alt
 def processed_data():
     # Load the raw data
     data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
+
                         parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
                         dayfirst=True, index_col=0)
 
@@ -27,23 +29,10 @@ expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 
 # Filter expiring members
 expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
+
 # Define the columns for the DataTable (dynamically generated)
 columns = [{"name": col.replace("_", " ").title(), "id": col}
            for col in expiring_members.columns]
-
-# Initialize the app
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-server = app.server
-
-# Define the columns for the DataTable (dynamically generated)
-columns = [{"name": col.replace("_", " ").title(), "id": col} for col in expiring_members.columns]
-
-
-# Layout
-app.layout = dbc.Container(
-    [
-        # Store component to keep track of active filters
-        dcc.Store(id="active-filter-store", data={"renewal": [], "gender": [], "date_range": []}),
 
         dbc.Row(
             [
@@ -104,7 +93,7 @@ app.layout = dbc.Container(
                             style={"marginBottom": "50px"}
                         ),
 
-                        # Date range checkboxes 
+                        # Date range RadioItems 
                         html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
                         dbc.RadioItems(
                             id="date-range-checklist",
@@ -310,6 +299,7 @@ def update_rating_graph(renew, gender, age_range, date_range):
      Input("age-range-filter", "value"),
      Input("date-range-checklist", "value")]
 )
+
 def update_purchase_graph(renew, gender, age_range, date_range):
     df_filtered = df[
         (df['Gender'].isin(gender)) &
@@ -366,7 +356,7 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     ).interactive().to_dict()
     return engagement_graph
 
-
 if __name__ == "__main__":
     app.server.run(debug=True, port=8081)
+
 
