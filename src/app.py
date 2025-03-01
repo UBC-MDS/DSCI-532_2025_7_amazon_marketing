@@ -14,6 +14,7 @@ expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
 
 
+
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
