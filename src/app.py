@@ -19,11 +19,13 @@ def processed_data():
     # Process the data
     data["Age"] = (pd.Timestamp.today() - data["Date of Birth"]).dt.days // 365
     data["Months Till Expire"] = ((data["Membership End Date"] - pd.Timestamp.today()).dt.days // 30).clip(lower=0)
-    
+
+    data["Membership End Date"] = data["Membership End Date"].dt.date
     # Return the processed DataFrame
     return data
 
 df = processed_data()
+
 
 # Define the layout of the app
 app.layout = dbc.Container(
@@ -34,10 +36,10 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Title
-                        html.H1("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "30px", "marginBottom": "30px"}),
+                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "30px", "marginBottom": "30px"}),
 
                         # Renewal checkboxes 
-                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
+                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
                         dbc.Checklist(
                             id="renewal-checklist",
                             options=[
@@ -50,13 +52,13 @@ app.layout = dbc.Container(
                                 "display": "flex",
                                 "flexDirection": "column",
                                 "alignItems": "center",  
-                                "fontSize": "20px",  
-                                "marginBottom": "50px"
+                                "fontSize": "16px",  
+                                "marginBottom": "30px"
                             }
                         ),
 
                         # Gender checkboxes 
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
                         dbc.Checklist(
                             id="gender-checklist",
                             options=[
@@ -69,13 +71,13 @@ app.layout = dbc.Container(
                                 "display": "flex",
                                 "flexDirection": "column",
                                 "alignItems": "center", 
-                                "fontSize": "20px", 
-                                "marginBottom": "50px"
+                                "fontSize": "16px", 
+                                "marginBottom": "30px"
                             }
                         ),
 
                         # Age range slider
-                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
+                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
                         html.Div(
                             dcc.RangeSlider(
                                 id="age-range-filter",
@@ -84,11 +86,11 @@ app.layout = dbc.Container(
                                 step=10,
                                 value=[0, 100],  
                             ),
-                            style={"marginBottom": "50px"}
+                            style={"marginBottom": "20px"}
                         ),
 
                         # Date range RadioItems 
-                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
+                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
                         dbc.RadioItems(
                             id="date-range-checklist",
                             options=[
@@ -103,8 +105,8 @@ app.layout = dbc.Container(
                                 "display": "flex",
                                 "flexDirection": "column",
                                 "alignItems": "center",  
-                                "fontSize": "20px",  
-                                "marginBottom": "50px"
+                                "fontSize": "16px",  
+                                "marginBottom": "20px"
                             }
                         ),
                     ],
@@ -121,12 +123,12 @@ app.layout = dbc.Container(
                                         dbc.CardBody(
                                             [
                                                 html.H4("Current Users", className="card-title"),
-                                                html.H2(id="current-number-placeholder", className="card-text")
+                                                html.H3(id="current-number-placeholder", className="card-text")
                                             ]
                                         ),
                                         color="success", 
                                         inverse=True, 
-                                        style={"marginTop": "40px"}
+                                        style={"marginTop": "30px"}
                                     ),
                                     width=6
                                 ),
@@ -135,12 +137,12 @@ app.layout = dbc.Container(
                                         dbc.CardBody(
                                             [
                                                 html.H4("Expired Users", className="card-title"),
-                                                html.H2(id="expiring-number-placeholder", className="card-text")
+                                                html.H3(id="expiring-number-placeholder", className="card-text")
                                             ]
                                         ),
                                         color="danger", 
                                         inverse=True,
-                                        style={"marginTop": "40px"}
+                                        style={"marginTop": "30px"}
                                     ),
                                     width=6
                                 ),
@@ -148,7 +150,7 @@ app.layout = dbc.Container(
                         ),
 
                         # Table for expiring members
-                        html.H2("Expiring Members", style={"marginTop": "50px"}),
+                        html.H4("Expiring Members", style={"marginTop": "30px"}),
                         dash_table.DataTable(
                             id="expiring-table-placeholder",
                             columns=[],  # Set the columns dynamically from the filtered DataFrame
@@ -158,7 +160,9 @@ app.layout = dbc.Container(
                             filter_action="native",  # Allow column filtering
                             sort_action="native",  # Allow sorting by column
                             page_action="native",  # Remove pagination and show all rows
-                            style_cell={'textAlign': 'left'},  # Align text in the cells to the left
+                            # Align text in the cells to the left
+                            style_cell={'textAlign': 'left',
+                                        "fontSize": "12px"},
                         ),
                     ],
                     width=5,
@@ -168,14 +172,14 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Placeholder for right column
-                        html.H3("User Ratings Overview",
-                                style={"marginTop": "40px", "textAlign": "center"}),
+                        html.H4("User Ratings Overview",
+                                style={"marginTop": "20px", "textAlign": "left", 'paddingLeft':'30px', 'marginBottom':  '10px'}),
                         dvc.Vega(id='rating_graph', spec={}),
-                        html.H3("User Purchase History", style={
-                                "marginTop": "20px", "textAlign": "center"}),
+                        html.H4("User Purchase History", style={
+                                "marginTop": "20px", "textAlign": "left", 'paddingLeft': '30px', 'marginBottom':  '10px'}),
                         dvc.Vega(id='purchase_graph', spec={}),
-                        html.H3("User Engagement Levels", style={
-                                "marginTop": "20px", "textAlign": "center"}),
+                        html.H4("User Engagement Levels", style={
+                                "marginTop": "20px", "textAlign": "left", 'paddingLeft': '30px', 'marginBottom':  '10px'}),
                         dvc.Vega(id='engagement_graph', spec={})
                     ],
                     width=5,
@@ -188,22 +192,22 @@ app.layout = dbc.Container(
                     [
                         html.P(
                             "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
-                            style={"fontSize": "20px", "marginTop": "5px", "textAlign": "center"}
+                            style={"fontSize": "14px", "marginTop": "5px", "textAlign": "center"}
                         ),
                         html.P(
                             "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
-                            style={"fontSize": "20px", "textAlign": "center"}
+                            style={"fontSize": "14px", "textAlign": "center"}
                         ),
                         html.P(
                             html.A("View the repository on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing", target="_blank"),
-                            style={"fontSize": "20px", "textAlign": "center"}
+                            style={"fontSize": "14px", "textAlign": "center"}
                         ),
                         html.P(
                             f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
-                            style={"fontSize": "20px", "textAlign": "center"}
+                            style={"fontSize": "14px", "textAlign": "center"}
                         ),
                     ], 
-                    style={"marginBottom": "20px"},
+                    style={"marginBottom": "14px"},
                 ),
                 width=12,
             )
@@ -263,23 +267,23 @@ def update_rating_graph(renew, gender, age_range, date_range):
         (df['Months Till Expire'] <= date_range)
     ]
     rating_graph = alt.Chart(df_filtered).transform_density(
-    'Feedback/Ratings',
-    groupby = ['Gender'],
-    as_ = ['Feedback/Ratings', 'density']
+        'Feedback/Ratings',
+        groupby = ['Gender'],
+        as_ = ['Feedback/Ratings', 'density']
     ).mark_line(strokeWidth=4).encode(
-    x = alt.X('Feedback/Ratings', title="Ratings"),
-    y = alt.Y('density:Q', title='Density'),
-    color=alt.Color('Gender', legend=alt.Legend(symbolStrokeWidth=5)),
-    tooltip = ['Feedback/Ratings']
+        x = alt.X('Feedback/Ratings', title="Ratings"),
+        y = alt.Y('density:Q', title='Density'),
+        color=alt.Color('Gender', legend=alt.Legend(symbolStrokeWidth=5)),
+        tooltip = ['Feedback/Ratings']
     ).properties(
-    width = 600,
-    height = 200
+        width = 375,
+        height = 200, 
     ).configure_axis(
-    labelFontSize = 18, 
-    titleFontSize = 20   
+        labelFontSize = 14, 
+        titleFontSize = 16   
     ).configure_legend(
-    labelFontSize = 18,  
-    titleFontSize = 20   
+        labelFontSize = 14,  
+        titleFontSize = 16  
     ).interactive().to_dict()
 
     return rating_graph
@@ -300,20 +304,20 @@ def update_purchase_graph(renew, gender, age_range, date_range):
         (df['Age'].between(age_range[0], age_range[1])) &
         (df['Months Till Expire'] <= date_range)
     ]
-    purchase_graph = alt.Chart(df_filtered).mark_bar(size=100).encode(
+    purchase_graph = alt.Chart(df_filtered).mark_bar(size=50).encode(
         x=alt.X('Purchase History', axis=alt.Axis(labelAngle=0), title="Product Categories"),
         y=alt.Y('count()', title="Count"),
         color=alt.Color('Gender', legend=alt.Legend(symbolSize=200)),
         tooltip=['count()']
     ).properties(
-        width=600,
+        width=375,
         height=200
     ).configure_axis(
-        labelFontSize=18,
-        titleFontSize=20
+        labelFontSize=14,
+        titleFontSize=16
     ).configure_legend(
-        labelFontSize=18,
-        titleFontSize=20
+        labelFontSize=14,
+        titleFontSize=16
     ).interactive().to_dict()
     return purchase_graph
 
@@ -332,20 +336,20 @@ def update_engagement_graph(renew, gender, age_range, date_range):
         (df['Age'].between(age_range[0], age_range[1])) &
         (df['Months Till Expire'] <= date_range)
     ]
-    engagement_graph = alt.Chart(df_filtered).mark_bar(size=100).encode(
+    engagement_graph = alt.Chart(df_filtered).mark_bar(size=50).encode(
         x=alt.X('Engagement Metrics', axis=alt.Axis(labelAngle=0),title="Engagment Level"),
         y=alt.Y('count()', title='Count'),
         color=alt.Color('Gender', legend=alt.Legend(symbolSize=200)),
         tooltip=['count()']
     ).properties(
-        width=600,
+        width=375,
         height=200
     ).configure_axis(
-        labelFontSize=18,
-        titleFontSize=20
+        labelFontSize=14,
+        titleFontSize=16
     ).configure_legend(
-        labelFontSize=18,
-        titleFontSize=20
+        labelFontSize=14,
+        titleFontSize=16
     ).interactive().to_dict()
     return engagement_graph
 
