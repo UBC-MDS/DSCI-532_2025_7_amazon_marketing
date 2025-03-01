@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Input, Output, callback
+from dash import Dash, html, dcc, Input, Output, callback, dash_table
 from data import processed_data
 import dash_bootstrap_components as dbc
 import pandas as pd
@@ -18,6 +18,9 @@ expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_in
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
+
+# Define the columns for the DataTable (dynamically generated)
+columns = [{"name": col.replace("_", " ").title(), "id": col} for col in expiring_members.columns]
 
 # Layout 
 app.layout = dbc.Container(
@@ -105,8 +108,17 @@ app.layout = dbc.Container(
                         ),
                         # Table for expiring members
                         html.H4("Expiring Members", style={"marginTop": "30px"}),
-                        dbc.Table(id="expiring-table-placeholder", striped=True, bordered=True, hover=True), 
-
+                        dash_table.DataTable(
+                            id="expiring-table-placeholder",
+                            columns=columns,  # Set the columns dynamically from the filtered DataFrame
+                            data=expiring_members.to_dict('records'),  # Convert filtered DataFrame to records for DataTable
+                            page_size=20, 
+                            style_table={'height': '700px', 'overflowY': 'auto'},  # Set a larger scrollable height
+                            filter_action="native",  # Allow column filtering
+                            sort_action="native",  # Allow sorting by column
+                            page_action="native",  # Remove pagination and show all rows
+                            style_cell={'textAlign': 'left'},  # Align text in the cells to the left
+                        ),
                     ],
                     width=5,  
                 ),
@@ -132,7 +144,7 @@ app.layout = dbc.Container(
 @app.callback(
     [Output("current-number-placeholder", "children"),
      Output("expiring-number-placeholder", "children"),
-     Output("expiring-table-placeholder", "children")],
+     Output("expiring-table-placeholder", "data")],
     [Input("manual-renew", "n_clicks"),
      Input("auto-renew", "n_clicks"),
      Input("male-gender", "n_clicks"),
@@ -144,19 +156,20 @@ app.layout = dbc.Container(
      Input("All-time-filter", "n_clicks")]
 )
 def update_users_and_table(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
-    # Filter based on gender
+    # Start with the entire dataset
     gender_filtered = df
+
+    # Apply gender filter
     if male_clicks:
-        gender_filtered = df[df["Gender"] == "Male"]
+        gender_filtered = gender_filtered[gender_filtered["Gender"] == "Male"]
     elif female_clicks:
-        gender_filtered = df[df["Gender"] == "Female"]
+        gender_filtered = gender_filtered[gender_filtered["Gender"] == "Female"]
 
-    # Filter based on age range (adjust the age range values)
+    # Apply age range filter
     if age_range:
-        gender_filtered = gender_filtered[gender_filtered["Age"] >= age_range[0]]
-        gender_filtered = gender_filtered[gender_filtered["Age"] <= age_range[1]]
+        gender_filtered = gender_filtered[(gender_filtered["Age"] >= age_range[0]) & (gender_filtered["Age"] <= age_range[1])]
 
-    # Filter based on date range (using the 'Months Till Expire' column)
+    # Apply expiration date range filter
     if month1:
         gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 1]
     elif month3:
@@ -164,17 +177,17 @@ def update_users_and_table(manual_clicks, auto_renew_clicks, male_clicks, female
     elif month6:
         gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 6]
     elif all_time:
-        gender_filtered = gender_filtered
+        gender_filtered = gender_filtered  # No filter for all time
 
     # Calculate current and expired users
     current_users = gender_filtered[gender_filtered["Months Till Expire"] > 0].index.nunique()
     expired_users = gender_filtered[gender_filtered["Months Till Expire"] == 0].index.nunique()
 
-    # Prepare the table for expiring members
+    # Prepare the table for expiring members (only the selected columns)
     expiring_members = gender_filtered[["Name", "Email Address", "Membership End Date"]].reset_index()
 
-    # Return the updated values
-    return current_users, expired_users, dbc.Table.from_dataframe(expiring_members, striped=True, bordered=True, hover=True)
+    # Return the updated table with filtered data
+    return current_users, expired_users, expiring_members.to_dict('records')
 
 
 # callback for rating overtime graph
