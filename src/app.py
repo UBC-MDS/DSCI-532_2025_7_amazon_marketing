@@ -336,7 +336,7 @@ def update_engagement_graph(renew, gender, age_range, date_range):
         (df['Age'].between(age_range[0], age_range[1])) &
         (df['Months Till Expire'] <= date_range)
     ]
-    engagement_graph = alt.Chart(df_filtered).mark_bar(size=50).encode(
+    engagement_graph = alt.Chart(df_filtered).mark_bar(size=75).encode(
         x=alt.X('Engagement Metrics', axis=alt.Axis(labelAngle=0),title="Engagment Level"),
         y=alt.Y('count()', title='Count'),
         color=alt.Color('Gender', legend=alt.Legend(symbolSize=200)),
@@ -354,4 +354,4 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     return engagement_graph
 
 if __name__ == "__main__":
-    app.server.run(debug=True, port=8081)
+    app.server.run()
