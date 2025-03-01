@@ -12,3 +12,4 @@ def processed_data():
     data.to_csv('../data/processed/processed.csv')
     
     return data
+
