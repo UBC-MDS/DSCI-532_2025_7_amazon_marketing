@@ -1,256 +1,302 @@
-from dash import Dash, html, dcc, Input, Output, callback
-from data import processed_data
+from dash import Dash, html, dcc, Input, Output, callback, dash_table
+# from data import processed_data
 import dash_bootstrap_components as dbc
-import dash_vega_components as dvc
-import altair as alt
+from datetime import datetime
 import pandas as pd
+
+# Process and load the data directly
+def processed_data():
+    # Load the raw data
+    data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
+                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
+                        dayfirst=True, index_col=0)
+
+    # Process the data
+    data["Age"] = (pd.Timestamp.today() - data["Date of Birth"]).dt.days // 365
+    data["Months Till Expire"] = ((data["Membership End Date"] - pd.Timestamp.today()).dt.days // 30).clip(lower=0)
+    
+    # Return the processed DataFrame
+    return data
+
+df = processed_data()
+
+# Count users
+current_users = df[df["Months Till Expire"] > 0].index.nunique()
+expired_users = df[df["Months Till Expire"] == 0].index.nunique()
+
+# Filter expiring members
+expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
 
 
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
-# Layout 
+# Define the columns for the DataTable (dynamically generated)
+columns = [{"name": col.replace("_", " ").title(), "id": col} for col in expiring_members.columns]
+
+
+# Layout
 app.layout = dbc.Container(
     [
+        # Store component to keep track of active filters
+        dcc.Store(id="active-filter-store", data={"renewal": [], "gender": [], "date_range": []}),
+
         dbc.Row(
             [
                 # Left column for filters
                 dbc.Col(
                     [
-                        # title
+                        # Title
                         html.H1("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "30px"}),
 
-                        # renewal button
+                        # Renewal checkboxes 
                         html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
-                        html.Div(
-                            [
-                                dcc.Checklist(
-                                    id='renew-filter', 
-                                    options=["Auto-renew", "Manual"],
-                                    value=["Auto-renew", "Manual"],
-                                    style={"marginBottom": "50px"},
-                                )
-                            ]
-
-                        ),    
-                        #gender button
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
-                        html.Div(
-                            [
-                                dcc.Checklist(
-                                    id='gender-filter',
-                                    options=["Male", "Female"],
-                                    value=["Male", "Female"],
-                                    style={"marginBottom": "50px"},
-                                )
-                            ]
+                        dbc.Checklist(
+                            id="renewal-checklist",
+                            options=[
+                                {"label": "Manual", "value": "manual-renew"},
+                                {"label": "Auto Renew", "value": "auto-renew"},
+                            ],
+                            value=[],
+                            inline=False,  
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center",  
+                                "fontSize": "20px",  
+                                "marginBottom": "50px"
+                            }
                         ),
-                        #age range slider
+
+                        # Gender checkboxes 
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
+                        dbc.Checklist(
+                            id="gender-checklist",
+                            options=[
+                                {"label": "Male", "value": "male-gender"},
+                                {"label": "Female", "value": "female-gender"},
+                            ],
+                            value=[],
+                            inline=False, 
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center", 
+                                "fontSize": "20px", 
+                                "marginBottom": "50px"
+                            }
+                        ),
+
+                        # Age range slider
                         html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
                         html.Div(
                             dcc.RangeSlider(
-                                id='age-range-filter',
+                                id="age-range-filter",
                                 min=0,
                                 max=100,
                                 step=10,
-                                value=[10, 100],
+                                value=[0, 100],  
                             ),
-                            style={"marginBottom": "50px"} 
+                            style={"marginBottom": "50px"}
                         ),
-                        # date range buttons
+
+                        # Date range checkboxes 
                         html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
-                        html.Div(
+                        dbc.Checklist(
+                            id="date-range-checklist",
+                            options=[
+                                {"label": "1 Month", "value": "1-month-filter"},
+                                {"label": "3 Month", "value": "3-month-filter"},
+                                {"label": "6 Month", "value": "6-month-filter"},
+                                {"label": "All Time", "value": "All-time-filter"},
+                            ],
+                            value=[],
+                            inline=False,  
+                            style={
+                                "display": "flex",
+                                "flexDirection": "column",
+                                "alignItems": "center",  
+                                "fontSize": "20px",  
+                                "marginBottom": "50px"
+                            }
+                        ),
+                    ],
+                    width=2,
+                ),
+                # Middle column
+                dbc.Col(
+                    [
+                        # Row for the cards
+                        dbc.Row(
                             [
-                                dcc.RadioItems(
-                                    id="date-filter",
-                                    options=[
-                                        {"label": "1 Month", "value":1},
-                                        {"label": "3 Month", "value":3},
-                                        {"label": "6 Month", "value":6},
-                                        {"label": "All Time", "value": 999}],
-                                    value=999,
+                                dbc.Col(
+                                    dbc.Card(
+                                        dbc.CardBody(
+                                            [
+                                                html.H4("Current Users", className="card-title"),
+                                                html.H2(id="current-number-placeholder", className="card-text")
+                                            ]
+                                        ),
+                                        color="success", inverse=True
+                                    ),
+                                    width=6
+                                ),
+                                dbc.Col(
+                                    dbc.Card(
+                                        dbc.CardBody(
+                                            [
+                                                html.H4("Expired Users", className="card-title"),
+                                                html.H2(id="expiring-number-placeholder", className="card-text")
+                                            ]
+                                        ),
+                                        color="danger", inverse=True
+                                    ),
+                                    width=6
                                 ),
                             ]
                         ),
-                    ],
-                    width=2,  
-                ),
-                # Middle column 
-                dbc.Col(
-                    [
-                        # Placeholder for middle columns 
-                        # Table here
-                        # ...
 
+                        # Table for expiring members
+                        html.H4("Expiring Members", style={"marginTop": "30px"}),
+                        dash_table.DataTable(
+                            id="expiring-table-placeholder",
+                            columns=columns,  # Set the columns dynamically from the filtered DataFrame
+                            data=expiring_members.to_dict('records'),  # Convert filtered DataFrame to records for DataTable
+                            page_size=20, 
+                            style_table={'height': '700px', 'overflowY': 'auto'},  # Set a larger scrollable height
+                            filter_action="native",  # Allow column filtering
+                            sort_action="native",  # Allow sorting by column
+                            page_action="native",  # Remove pagination and show all rows
+                            style_cell={'textAlign': 'left'},  # Align text in the cells to the left
+                        ),
                     ],
-                    width=5,  
-                ),
-
-                # Right column 
-                dbc.Col(
-                    [
-                        # Placeholder for right column 
-                        # Graph Here
-                        # ...
-                        dvc.Vega(id='rating_graph', spec={}),
-                        dvc.Vega(id='purchase_graph', spec={}),
-                        dvc.Vega(id='engagement_graph', spec={})
-                    ],
-                    width=5,  
+                    width=5,
                 ),
             ]
-        )
+        ),
+        dbc.Row(
+            dbc.Col(
+                html.Div(
+                    [
+                        html.P(
+                            "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
+                            style={"fontSize": "16px", "marginTop": "1px", "textAlign": "center"}
+                        ),
+                        html.P(
+                            "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
+                            style={"fontSize": "16px", "textAlign": "center"}
+                        ),
+                        html.P(
+                            html.A("View the repository on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing", target="_blank"),
+                            style={"fontSize": "16px", "textAlign": "center"}
+                        ),
+                        html.P(
+                            f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
+                            style={"fontSize": "16px", "textAlign": "center"}
+                        ),
+                    ], 
+                    style={"marginBottom": "20px"},
+                ),
+                width=12,
+            )
+        ),
     ],
     fluid=True,
+    
 )
 
-# # callback for current users number 
-# @callback(
-#     Output("current-number-placeholder", "children"),
-#     Input("manual-renew", "n_clicks"),
-#     Input("auto-renew", "n_clicks"),
-#     Input("male-gender", "n_clicks"),
-#     Input("female-gender", "n_clicks"),
-#     Input("age-range-filter", "value"),
-#     Input("1-month-filter", "n_clicks"),
-#     Input("3-month-filter", "n_clicks"),
-#     Input("6-month-filter", "n_clicks"),
-#     Input("All-time-filter", "n_clicks"),
-# )
-# def update_current_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
 
-#     return updated_current_number
+# Callback to update current and expired users 
+@app.callback(
+    [Output("current-number-placeholder", "children"),
+     Output("expiring-number-placeholder", "children"),
+     Output("expiring-table-placeholder", "data")],
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
+     Input("age-range-filter", "value"),
+     Input("date-range-checklist", "value")]
+)
+def update_users_and_table(renewal_values, gender_values, age_range, date_range_values):
+    # Start with the entire dataset
+    gender_filtered = df
 
-# # callback for expiring users number 
-# @callback(
-#     Output("expiring-number-placeholder", "children"),
-#     Input("manual-renew", "n_clicks"),
-#     Input("auto-renew", "n_clicks"),
-#     Input("male-gender", "n_clicks"),
-#     Input("female-gender", "n_clicks"),
-#     Input("age-range-filter", "value"),
-#     Input("1-month-filter", "n_clicks"),
-#     Input("3-month-filter", "n_clicks"),
-#     Input("6-month-filter", "n_clicks"),
-#     Input("All-time-filter", "n_clicks"),
-# )
-# def update_expiring_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+    # Apply renewal filter
+    if "manual-renew" in renewal_values:
+        gender_filtered = gender_filtered[gender_filtered["Renewal Status"] == "Manual"]
+    if "auto-renew" in renewal_values:
+        gender_filtered = gender_filtered[gender_filtered["Renewal Status"] == "Auto-renew"]
 
-#     return expiring_number
+    # Apply gender filter
+    if "male-gender" in gender_values:
+        gender_filtered = gender_filtered[gender_filtered["Gender"] == "Male"]
+    if "female-gender" in gender_values:
+        gender_filtered = gender_filtered[gender_filtered["Gender"] == "Female"]
 
-# # callback for expiring members table
-# @callback(
-#     Output("expiring-table-placeholder", "children"),
-#     Input("manual-renew", "n_clicks"),
-#     Input("auto-renew", "n_clicks"),
-#     Input("male-gender", "n_clicks"),
-#     Input("female-gender", "n_clicks"),
-#     Input("age-range-filter", "value"),
-#     Input("1-month-filter", "n_clicks"),
-#     Input("3-month-filter", "n_clicks"),
-#     Input("6-month-filter", "n_clicks"),
-#     Input("All-time-filter", "n_clicks"),
-# )
-# def update_expiring_members_table(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+    # Apply age range filter
+    if age_range:
+        gender_filtered = gender_filtered[(gender_filtered["Age"] >= age_range[0]) & (gender_filtered["Age"] <= age_range[1])]
 
-#     return updated_expiring_members_table
+    # Apply expiration date range filter
+    if "1-month-filter" in date_range_values:
+        gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 1]
+    if "3-month-filter" in date_range_values:
+        gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 3]
+    if "6-month-filter" in date_range_values:
+        gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 6]
+    if "All-time-filter" in date_range_values:
+        pass  # No filter for all time
 
+    # Calculate current and expired users
+    current_users = gender_filtered[gender_filtered["Months Till Expire"] > 0].index.nunique()
+    expired_users = gender_filtered[gender_filtered["Months Till Expire"] == 0].index.nunique()
+
+    # Prepare the table for expiring members (only the selected columns)
+    expiring_members = gender_filtered[["Name", "Email Address", "Membership End Date"]].reset_index()
+
+    # Return the updated table with filtered data
+    return current_users, expired_users, expiring_members.to_dict('records')
 
 
 # callback for rating overtime graph
 @callback(
-    Output("rating_graph", "spec"),
-    Input("renew-filter", "value"),
-    Input("gender-filter", "value"),
-    Input("age-range-filter", "value"),
-    Input("date-filter", "value"),
+    Output("rating-overtime-graph-placeholder", "children"),
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
+     Input("age-range-filter", "value"),
+     Input("date-range-checklist", "value")]
 )
+def update_rating_overtime_graph(renewal_values, gender_values, age_range, date_range_values):
 
-def update_rating_graph(renew, gender, age_range, date_range):
-    data = processed_data()
-    df = data[
-        (data['Gender'].isin(gender)) &
-        (data['Renewal Status'].isin(renew)) &
-        (data['Age'].between(age_range[0], age_range[1])) &
-        (data['Months Till Expire'] <= date_range)
-    ]
-    rating_graph = alt.Chart(df).transform_density(
-        'Feedback/Ratings',
-        groupby=['Gender'],
-        as_=['Feedback/Ratings', 'density'],
-        counts=True,
-    ).mark_line().encode(
-        x=alt.X('Feedback/Ratings'),
-        y=alt.Y('density:Q').stack(False),
-        color='Gender',
-        tooltip=['Feedback/Ratings']
-    ).properties(
-        width=400,
-        height=300
-    ).interactive().to_dict()
-
-    return rating_graph
+    return updated_rating_overtime_graph
 
 
 # callback for purchase history graph
 @callback(
-    Output("purchase_graph", "spec"),
-    Input("renew-filter", "value"),
-    Input("gender-filter", "value"),
-    Input("age-range-filter", "value"),
-    Input("date-filter", "value"),
+    Output("purchase-history-graph-placeholder", "children"),
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
+     Input("age-range-filter", "value"),
+     Input("date-range-checklist", "value")]
 )
-def update_purchase_graph(renew, gender, age_range, date_range):
-    data = processed_data()
-    df = data[
-        (data['Gender'].isin(gender)) &
-        (data['Renewal Status'].isin(renew)) &
-        (data['Age'].between(age_range[0], age_range[1])) &
-        (data['Months Till Expire'] <= date_range)
-    ]
-    purchase_graph = alt.Chart(df).mark_bar().encode(
-        x=alt.X('Purchase History', axis=alt.Axis(labelAngle=0)),
-        y='count()',
-        color='Gender',
-        tooltip=['count()']
-    ).properties(
-        width=400,
-        height=300
-    ).interactive().to_dict()
-    return purchase_graph
+def update_rating_overtime_graph(renewal_values, gender_values, age_range, date_range_values):
+
+    return updated_purchase_hirtory_graph
 
 
 # callback for user engagement graph
 @callback(
-    Output("engagement_graph", "spec"),
-    Input("renew-filter", "value"),
-    Input("gender-filter", "value"),
-    Input("age-range-filter", "value"),
-    Input("date-filter", "value"),
+    Output("user-engagement-graph-placeholder", "children"),
+    [Input("renewal-checklist", "value"),
+     Input("gender-checklist", "value"),
+     Input("age-range-filter", "value"),
+     Input("date-range-checklist", "value")]
 )
-def update_engagement_graph(renew, gender, age_range, date_range):
-    data = processed_data()
-    df = data[
-        (data['Gender'].isin(gender)) &
-        (data['Renewal Status'].isin(renew)) &
-        (data['Age'].between(age_range[0], age_range[1])) &
-        (data['Months Till Expire'] <= date_range)
-    ]
-    engagement_graph = alt.Chart(df).mark_bar().encode(
-        x=alt.X('Engagement Metrics', axis=alt.Axis(labelAngle=0)),
-        y='count()',
-        color='Gender',
-        tooltip=['count()']
-    ).properties(
-        width=400,
-        height=300
-    ).interactive().to_dict()
-    return engagement_graph
+def update_user_engagement_graph(renewal_values, gender_values, age_range, date_range_values):
 
+    return updated_user_engagement_graph
 
 
 if __name__ == "__main__":
-    app.server.run(debug=True, port=8081)
-
+    app.run(debug=True)
 
