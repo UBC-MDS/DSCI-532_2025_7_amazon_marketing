@@ -1,8 +1,11 @@
 from dash import Dash, html, dcc, Input, Output, callback
 from data import processed_data
 import dash_bootstrap_components as dbc
+import dash_vega_components as dvc
+import altair as alt
+import pandas as pd
 
-processed_data()
+data = processed_data()
 
 # Initialize the app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -77,7 +80,9 @@ app.layout = dbc.Container(
                         # Placeholder for right column 
                         # Graph Here
                         # ...
-   
+                        dvc.Vega(id='rating_graph', spec={}),
+                        dvc.Vega(id='purchase_graph', spec={}),
+                        dvc.Vega(id='engagement_graph', spec={})
                     ],
                     width=5,  
                 ),
@@ -138,62 +143,106 @@ def update_expiring_members_table(manual_clicks, auto_renew_clicks, male_clicks,
 
     return updated_expiring_members_table
 
-processed_data()
 
 # callback for rating overtime graph
 @callback(
-    Output("rating-overtime-graph-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
+    Output("rating_graph", "spec"),
+    # Input("manual-renew", "n_clicks"),
+    # Input("auto-renew", "n_clicks"),
+    # Input("male-gender", "n_clicks"),
+    # Input("female-gender", "n_clicks"),
     Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
+    # Input("1-month-filter", "n_clicks"),
+    # Input("3-month-filter", "n_clicks"),
+    # Input("6-month-filter", "n_clicks"),
+    # Input("All-time-filter", "n_clicks"),
 )
-def update_rating_overtime_graph(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+def update_rating_graph(age_range):
+    # age_l, age_h = age_range
+    # df = data[data['Gender'].isin(gender)]
+    # df = data[data['Renewal Status'].isin(renew)]
+    # df = data[data['Age'].between(age_l, age_h)]
+    # df = data[data['Months Till Expire'] <= expire]
+    rating_graph = alt.Chart(data).transform_density(
+        'Feedback/Ratings',
+        groupby=['Gender'],
+        as_=['Feedback/Ratings', 'density'],
+        counts=True,
+    ).mark_line().encode(
+        x=alt.X('Feedback/Ratings'),
+        y=alt.Y('density:Q').stack(False),
+        color='Gender',
+        tooltip=['Feedback/Ratings']
+    ).properties(
+        width=400,
+        height=300
+    ).interactive().to_dict()
 
-    return updated_rating_overtime_graph
+    return rating_graph
 
 
 # callback for purchase history graph
 @callback(
-    Output("purchase-history-graph-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
+    Output("purchase_graph", "spec"),
+    # Input("manual-renew", "n_clicks"),
+    # Input("auto-renew", "n_clicks"),
+    # Input("male-gender", "n_clicks"),
+    # Input("female-gender", "n_clicks"),
     Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
+    # Input("1-month-filter", "n_clicks"),
+    # Input("3-month-filter", "n_clicks"),
+    # Input("6-month-filter", "n_clicks"),
+    # Input("All-time-filter", "n_clicks"),
 )
-def update_rating_overtime_graph(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
-
-    return updated_purchase_hirtory_graph
+def update_purchase_graph(age_range):
+    # age_l, age_h = age_range
+    # df = data[data['Gender'].isin(gender)]
+    # df = data[data['Renewal Status'].isin(renew)]
+    # df = data[data['Age'].between(age_l, age_h)]
+    # df = data[data['Months Till Expire'] <= expire]
+    purchase_graph = alt.Chart(data).mark_bar().encode(
+        x=alt.X('Purchase History', axis=alt.Axis(labelAngle=0)),
+        y='count()',
+        color='Gender',
+        tooltip=['count()']
+    ).properties(
+        width=400,
+        height=300
+    ).interactive().to_dict()
+    return purchase_graph
 
 
 # callback for user engagement graph
 @callback(
-    Output("user-engagement-graph-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
+    Output("engagement_graph", "spec"),
+    # Input("manual-renew", "n_clicks"),
+    # Input("auto-renew", "n_clicks"),
+    # Input("male-gender", "n_clicks"),
+    # Input("female-gender", "n_clicks"),
     Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
+    # Input("1-month-filter", "n_clicks"),
+    # Input("3-month-filter", "n_clicks"),
+    # Input("6-month-filter", "n_clicks"),
+    # Input("All-time-filter", "n_clicks"),
 )
-def update_user_engagement_graph(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
-
-    return updated_user_engagement_graph
+def update_engagement_graph(age_range):
+    # age_l, age_h = age_range
+    # df = data[data['Gender'].isin(gender)]
+    # df = data[data['Renewal Status'].isin(renew)]
+    # df = data[data['Age'].between(age_l, age_h)]
+    # df = data[data['Months Till Expire'] <= expire]
+    engagement_graph = alt.Chart(data).mark_bar().encode(
+        x=alt.X('Engagement Metrics', axis=alt.Axis(labelAngle=0)),
+        y='count()',
+        color='Gender',
+        tooltip=['count()']
+    ).properties(
+        width=400,
+        height=300
+    ).interactive().to_dict()
+    return engagement_graph
 
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.server.run(debug=True)
