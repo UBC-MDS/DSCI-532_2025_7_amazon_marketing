@@ -7,11 +7,12 @@ import pandas as pd
 df = processed_data()
 
 # Count users
-current_users = df[df["Months Till Expire"] > 0]["User ID"].nunique()
-expired_users = df[df["Months Till Expire"] == 0]["User ID"].nunique()
+current_users = df[df["Months Till Expire"] > 0].index.nunique()
+expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 
 # Filter expiring members
-expiring_members = df[["User ID", "Email Address", "Membership End Date"]]
+expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
+
 
 
 # Initialize the app
@@ -81,7 +82,7 @@ app.layout = dbc.Container(
                                         dbc.CardBody(
                                             [
                                                 html.H4("Current Users", className="card-title"),
-                                                html.H2(current_users, className="card-text")
+                                                html.H2(id="current-number-placeholder", className="card-text")
                                             ]
                                         ),
                                         color="success", inverse=True
@@ -93,7 +94,7 @@ app.layout = dbc.Container(
                                         dbc.CardBody(
                                             [
                                                 html.H4("Expired Users", className="card-title"),
-                                                html.H2(expired_users, className="card-text")
+                                                html.H2(id="expiring-number-placeholder", className="card-text")
                                             ]
                                         ),
                                         color="danger", inverse=True
@@ -104,7 +105,7 @@ app.layout = dbc.Container(
                         ),
                         # Table for expiring members
                         html.H4("Expiring Members", style={"marginTop": "30px"}),
-                        dbc.Table.from_dataframe(expiring_members, striped=True, bordered=True, hover=True),
+                        dbc.Table(id="expiring-table-placeholder", striped=True, bordered=True, hover=True), 
 
                     ],
                     width=5,  
@@ -126,56 +127,54 @@ app.layout = dbc.Container(
     fluid=True,
 )
 
-# callback for current users number 
-@callback(
-    Output("current-number-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
+
+# Callback to update current and expired users 
+@app.callback(
+    [Output("current-number-placeholder", "children"),
+     Output("expiring-number-placeholder", "children"),
+     Output("expiring-table-placeholder", "children")],
+    [Input("manual-renew", "n_clicks"),
+     Input("auto-renew", "n_clicks"),
+     Input("male-gender", "n_clicks"),
+     Input("female-gender", "n_clicks"),
+     Input("age-range-filter", "value"),
+     Input("1-month-filter", "n_clicks"),
+     Input("3-month-filter", "n_clicks"),
+     Input("6-month-filter", "n_clicks"),
+     Input("All-time-filter", "n_clicks")]
 )
-def update_current_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+def update_users_and_table(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+    # Filter based on gender
+    gender_filtered = df
+    if male_clicks:
+        gender_filtered = df[df["Gender"] == "Male"]
+    elif female_clicks:
+        gender_filtered = df[df["Gender"] == "Female"]
 
-    return updated_current_number
+    # Filter based on age range (adjust the age range values)
+    if age_range:
+        gender_filtered = gender_filtered[gender_filtered["Age"] >= age_range[0]]
+        gender_filtered = gender_filtered[gender_filtered["Age"] <= age_range[1]]
 
-# callback for expiring users number 
-@callback(
-    Output("expiring-number-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
-)
-def update_expiring_users_number(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+    # Filter based on date range (using the 'Months Till Expire' column)
+    if month1:
+        gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 1]
+    elif month3:
+        gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 3]
+    elif month6:
+        gender_filtered = gender_filtered[gender_filtered["Months Till Expire"] <= 6]
+    elif all_time:
+        gender_filtered = gender_filtered
 
-    return expiring_number
+    # Calculate current and expired users
+    current_users = gender_filtered[gender_filtered["Months Till Expire"] > 0].index.nunique()
+    expired_users = gender_filtered[gender_filtered["Months Till Expire"] == 0].index.nunique()
 
-# callback for expiring members table
-@callback(
-    Output("expiring-table-placeholder", "children"),
-    Input("manual-renew", "n_clicks"),
-    Input("auto-renew", "n_clicks"),
-    Input("male-gender", "n_clicks"),
-    Input("female-gender", "n_clicks"),
-    Input("age-range-filter", "value"),
-    Input("1-month-filter", "n_clicks"),
-    Input("3-month-filter", "n_clicks"),
-    Input("6-month-filter", "n_clicks"),
-    Input("All-time-filter", "n_clicks"),
-)
-def update_expiring_members_table(manual_clicks, auto_renew_clicks, male_clicks, female_clicks, age_range, month1, month3, month6, all_time):
+    # Prepare the table for expiring members
+    expiring_members = gender_filtered[["Name", "Email Address", "Membership End Date"]].reset_index()
 
-    return updated_expiring_members_table
+    # Return the updated values
+    return current_users, expired_users, dbc.Table.from_dataframe(expiring_members, striped=True, bordered=True, hover=True)
 
 
 # callback for rating overtime graph
