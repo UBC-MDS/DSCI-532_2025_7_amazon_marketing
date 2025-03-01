@@ -1,18 +1,20 @@
 from dash import Dash, html, dcc, Input, Output, callback, dash_table
-
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from datetime import datetime
 import pandas as pd
 import altair as alt
 
+
+# Initialize the Dash app
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 # Process and load the data directly
 def processed_data():
     # Load the raw data
     data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
-
-                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
-                        dayfirst=True, index_col=0)
+                       parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
+                       dayfirst=True)
 
     # Process the data
     data["Age"] = (pd.Timestamp.today() - data["Date of Birth"]).dt.days // 365
@@ -31,9 +33,11 @@ expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
 
 # Define the columns for the DataTable (dynamically generated)
-columns = [{"name": col.replace("_", " ").title(), "id": col}
-           for col in expiring_members.columns]
+columns = [{"name": col.replace("_", " ").title(), "id": col} for col in expiring_members.columns]
 
+# Define the layout of the app
+app.layout = dbc.Container(
+    [
         dbc.Row(
             [
                 # Left column for filters
@@ -180,7 +184,7 @@ columns = [{"name": col.replace("_", " ").title(), "id": col}
                         html.H3("User Purchase History", style={
                                 "marginTop": "20px", "textAlign": "center"}),
                         dvc.Vega(id='purchase_graph', spec={}),
-                        html.H3("User Engagment Levels", style={
+                        html.H3("User Engagement Levels", style={
                                 "marginTop": "20px", "textAlign": "center"}),
                         dvc.Vega(id='engagement_graph', spec={})
                     ],
@@ -216,7 +220,6 @@ columns = [{"name": col.replace("_", " ").title(), "id": col}
         ),
     ],
     fluid=True,
-    
 )
 
 
@@ -358,5 +361,3 @@ def update_engagement_graph(renew, gender, age_range, date_range):
 
 if __name__ == "__main__":
     app.server.run(debug=True, port=8081)
-
-
