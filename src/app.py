@@ -12,7 +12,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 # Process and load the data directly
 def processed_data():
     # Load the raw data
-    data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
+    data = pd.read_csv("data/raw/amazon_prime_users.csv", sep=";", 
                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
                        dayfirst=True)
 

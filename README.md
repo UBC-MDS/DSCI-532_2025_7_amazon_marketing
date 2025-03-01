@@ -44,7 +44,7 @@ If you're interested in running the app locally or contributing to its developme
 3. **Run the app** Once the dependencies are installed, you can run the dashboard locally:
    
    ```bash
-   python app.py
+   python src/app.py
    ```
 
 
