@@ -8,11 +8,12 @@ import altair as alt
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
 
 # Process and load the data directly
 def processed_data():
     # Load the raw data
-    data = pd.read_csv("data/raw/amazon_prime_users.csv", sep=";", 
+    data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
                        dayfirst=True)
 
@@ -372,4 +373,4 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     return engagement_graph
 
 if __name__ == "__main__":
-    app.server.run(debug=True, port=8081)
+    app.server.run()
