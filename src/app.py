@@ -5,12 +5,16 @@ from datetime import datetime
 import pandas as pd
 import altair as alt
 
+
+# Initialize the Dash app
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 # Process and load the data directly
 def processed_data():
     # Load the raw data
     data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
-                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
-                        dayfirst=True, index_col=0)
+                       parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
+                       dayfirst=True)
 
     # Process the data
     data["Age"] = (pd.Timestamp.today() - data["Date of Birth"]).dt.days // 365
@@ -27,24 +31,13 @@ expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 
 # Filter expiring members
 expiring_members = df[["Name", "Email Address", "Membership End Date"]].reset_index()
-# Define the columns for the DataTable (dynamically generated)
-columns = [{"name": col.replace("_", " ").title(), "id": col}
-           for col in expiring_members.columns]
-
-# Initialize the app
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-server = app.server
 
 # Define the columns for the DataTable (dynamically generated)
 columns = [{"name": col.replace("_", " ").title(), "id": col} for col in expiring_members.columns]
 
-
-# Layout
+# Define the layout of the app
 app.layout = dbc.Container(
     [
-        # Store component to keep track of active filters
-        dcc.Store(id="active-filter-store", data={"renewal": [], "gender": [], "date_range": []}),
-
         dbc.Row(
             [
                 # Left column for filters
@@ -104,7 +97,7 @@ app.layout = dbc.Container(
                             style={"marginBottom": "50px"}
                         ),
 
-                        # Date range checkboxes 
+                        # Date range RadioItems 
                         html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "24px"}),
                         dbc.RadioItems(
                             id="date-range-checklist",
@@ -191,7 +184,7 @@ app.layout = dbc.Container(
                         html.H3("User Purchase History", style={
                                 "marginTop": "20px", "textAlign": "center"}),
                         dvc.Vega(id='purchase_graph', spec={}),
-                        html.H3("User Engagment Levels", style={
+                        html.H3("User Engagement Levels", style={
                                 "marginTop": "20px", "textAlign": "center"}),
                         dvc.Vega(id='engagement_graph', spec={})
                     ],
@@ -227,7 +220,6 @@ app.layout = dbc.Container(
         ),
     ],
     fluid=True,
-    
 )
 
 
@@ -310,6 +302,7 @@ def update_rating_graph(renew, gender, age_range, date_range):
      Input("age-range-filter", "value"),
      Input("date-range-checklist", "value")]
 )
+
 def update_purchase_graph(renew, gender, age_range, date_range):
     df_filtered = df[
         (df['Gender'].isin(gender)) &
@@ -366,7 +359,5 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     ).interactive().to_dict()
     return engagement_graph
 
-
 if __name__ == "__main__":
     app.server.run(debug=True, port=8081)
-
