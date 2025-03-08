@@ -252,7 +252,7 @@ def update_users_and_table(renewal_values, gender_values, age_range, date_range_
     # Calculate current and expired users
     current_users = df[df["Months Till Expire"] > 0].index.nunique()
     
-    expired_users = df[df["Months Till Expire"] == 0].index.nunique()
+    expiring_users = df_filtered.index.nunique()
 
     # Prepare the table for expiring members (only the selected columns)
     expiring_members = df_filtered[[
@@ -267,7 +267,7 @@ def update_users_and_table(renewal_values, gender_values, age_range, date_range_
     ]
 
     # Return the updated table with filtered data
-    return current_users, expired_users, expiring_members.to_dict('records'), columns
+    return current_users, expiring_users, expiring_members.to_dict('records'), columns
 
 
 # callback for rating distribution graph
