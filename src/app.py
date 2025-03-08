@@ -19,7 +19,8 @@ def processed_data():
 
     # Process the data
     data["Age"] = (pd.Timestamp.today() - data["Date of Birth"]).dt.days // 365
-    data["Months Till Expire"] = ((data["Membership End Date"] - pd.Timestamp.today()).dt.days // 30).clip(lower=0)
+    data["Months Till Expire"] = np.ceil(
+        (data["Membership End Date"] - pd.Timestamp.today()).dt.days / 30).clip(lower=0)
 
     data["Membership End Date"] = data["Membership End Date"].dt.date
     # Return the processed DataFrame
