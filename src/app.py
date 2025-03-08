@@ -149,26 +149,26 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Title
-                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "20px", "marginBottom": "20px", "fontSize": "50px"}),
+                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "10px", "marginBottom": "20px", "fontSize": "36px"}),
 
                         # Renewal checkboxes 
-                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
                         (renewal_checkbox), 
 
                         # Gender checkboxes 
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
                         (gender_checkbox),
 
                         # Age range slider
-                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
                         (age_range_slider),
                         
                         # Date range RadioItems 
-                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
                         (date_range_radio),
                     ],
                     width=2,
-                    style={"backgroundColor": "#FF9900", "padding": "20px", "borderRadius": "10px"},  
+                    style={"backgroundColor": "#FF9900", "padding": "10px", "borderRadius": "10px"},  
                 ),
 
                 # Middle column
@@ -191,7 +191,7 @@ app.layout = dbc.Container(
                         (Expiring_Members_Table),
                     ],
                     width=5,
-                    style={"backgroundColor": "#f8f9fa", "padding": "20px", "borderRadius": "10px"}  
+                    style={"backgroundColor": "#f8f9fa", "padding": "10px", "borderRadius": "10px"}  
                 ),
                 
                 # Right column
@@ -205,9 +205,8 @@ app.layout = dbc.Container(
                                                   'fontWeight': 'bold'}),
                             dbc.CardBody(
                                 dvc.Vega(id='rating_graph',spec={}))], 
-                            style={"marginTop": "10px",
-                                   'width': '100%', 
-                                   'height':'24%'}),
+                            style={'width': '100%', 
+                                   'height':'32%'}),
                                 
                         dbc.Card([
                             dbc.CardHeader('User Purchase History', 
@@ -216,9 +215,9 @@ app.layout = dbc.Container(
                                                 
                             dbc.CardBody(
                                 dvc.Vega(id='purchase_graph', spec={}))],
-                            style={"marginTop": "10px", 
+                            style={"marginTop": "5px", 
                                    'width': '100%', 
-                                   'height': '24%'}),
+                                   'height': '32%'}),
                                 
                         dbc.Card([
                             dbc.CardHeader('User Engagement Levels', 
@@ -226,14 +225,14 @@ app.layout = dbc.Container(
                                                   'paddingLeft': '20px', 'fontWeight': 'bold'}),
                             dbc.CardBody(
                                 dvc.Vega(id='engagement_graph', spec={}))],
-                            style={"marginTop": "10px", 
+                            style={"marginTop": "5px", 
                                    'width': '100%', 
-                                   'height': '19%'}),
+                                   'height': '26%'}),
                     ],
                     width=5,
                 ),
             ], 
-            style={"backgroundColor": "#f8f9fa", "padding": "20px", "borderRadius": "10px"} 
+            style={"backgroundColor": "#f8f9fa", "padding": "10px", "borderRadius": "10px"} 
         ),
         dbc.Row(
             dbc.Col(
@@ -372,7 +371,7 @@ def update_purchase_graph(data):
                  alt.Tooltip('count()', title='Count')],
         order=alt.Order('Gender:N', sort='ascending')
     ).properties(
-        height=120
+        height=110
     ).configure_axis(
         labelFontSize=12,
         titleFontSize=14
@@ -403,7 +402,7 @@ def update_engagement_graph(data):
                  alt.Tooltip('count()', title='Count')],
         order=alt.Order('Gender:N', sort='ascending')
     ).properties(
-        height=75
+        height=70
     ).configure_axis(
         labelFontSize=12,
         titleFontSize=14
