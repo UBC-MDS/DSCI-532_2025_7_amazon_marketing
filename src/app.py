@@ -275,33 +275,31 @@ def update_users_and_table(renewal_values, gender_values, age_range, date_range_
     Output("rating_graph", "spec"),
     Input("expiring-table-placeholder", "derived_virtual_data")
 )
-def update_rating_graph(renew, gender, age_range, date_range):
-    df_filtered = df[
-        (df['Gender'].isin(gender)) &
-        (df['Renewal Status'].isin(renew)) &
-        (df['Age'].between(age_range[0], age_range[1])) &
-        (df['Months Till Expire'] <= date_range)
-    ]
-    rating_graph = alt.Chart(df_filtered).transform_density(
+def update_rating_graph(data):
+    data = pd.DataFrame(data)
+    rating_graph = alt.Chart(data, width='container').transform_density(
         'Feedback/Ratings',
         groupby = ['Gender'],
         as_ = ['Feedback/Ratings', 'density']
-    ).mark_line(strokeWidth=4).encode(
-        x = alt.X('Feedback/Ratings', title="Ratings"),
+    ).mark_line(strokeWidth=3).encode(
+        x=alt.X('Feedback/Ratings', title="Ratings"),
         y = alt.Y('density:Q', title='Density'),
-        color=alt.Color('Gender', legend=alt.Legend(symbolStrokeWidth=5)),
-        tooltip = ['Feedback/Ratings']
+        color=alt.Color('Gender', 
+                        legend=alt.Legend(symbolStrokeWidth=5), scale=alt.Scale(
+                            domain=['Male', 'Female'], 
+                            range=['dodgerblue', 'crimson'])),
+        tooltip=[alt.Tooltip('Gender'),
+                 alt.Tooltip('Feedback/Ratings', title='Ratings'),
+                 alt.Tooltip('density:Q', title='Density')]
     ).properties(
-        width = 375,
-        height = 200, 
+        height = 120, 
     ).configure_axis(
-        labelFontSize = 14, 
-        titleFontSize = 16   
+        labelFontSize = 12, 
+        titleFontSize = 14  
     ).configure_legend(
-        labelFontSize = 14,  
-        titleFontSize = 16  
-
-    ).interactive().to_dict()
+        labelFontSize = 12,  
+        titleFontSize = 14  
+    ).to_dict()
 
     return rating_graph
 
@@ -311,31 +309,30 @@ def update_rating_graph(renew, gender, age_range, date_range):
     Input("expiring-table-placeholder", "derived_virtual_data")
 )
 
-def update_purchase_graph(renew, gender, age_range, date_range):
-    df_filtered = df[
-        (df['Gender'].isin(gender)) &
-        (df['Renewal Status'].isin(renew)) &
-        (df['Age'].between(age_range[0], age_range[1])) &
-        (df['Months Till Expire'] <= date_range)
-    ]
-
-    purchase_graph = alt.Chart(df_filtered).mark_bar(size=50).encode(
-        x=alt.X('Purchase History', axis=alt.Axis(labelAngle=0), title="Product Categories"),
+def update_purchase_graph(data):
+    data = pd.DataFrame(data)
+    purchase_graph = alt.Chart(data, width='container').mark_bar(size=40).encode(
+        x=alt.X('Purchase History', 
+                axis=alt.Axis(labelAngle=0), 
+                title="Product Categories"),
         y=alt.Y('count()', title="Count"),
-        color=alt.Color('Gender', legend=alt.Legend(symbolSize=200)),
-        tooltip=['count()']
+        color=alt.Color('Gender', 
+                        legend=alt.Legend(symbolSize=200), 
+                        scale=alt.Scale(
+                            domain=['Male', 'Female'], 
+                            range=['dodgerblue', 'crimson'])),
+        tooltip=[alt.Tooltip('Gender'),
+                 alt.Tooltip('count()', title='Count')],
+        order=alt.Order('Gender:N', sort='ascending')
     ).properties(
-
-        width=375,
-        height=200
+        height=120
     ).configure_axis(
-        labelFontSize=14,
-        titleFontSize=16
+        labelFontSize=12,
+        titleFontSize=14
     ).configure_legend(
-        labelFontSize=14,
-        titleFontSize=16
-
-    ).interactive().to_dict()
+        labelFontSize=12,
+        titleFontSize=14
+    ).to_dict()
     return purchase_graph
 
 # callback for user engagement graph
