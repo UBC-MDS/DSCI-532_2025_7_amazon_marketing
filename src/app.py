@@ -143,7 +143,7 @@ app.layout = dbc.Container(
                                     dbc.Card(
                                         dbc.CardBody(
                                             [
-                                                html.H4("Expired Users", className="card-title"),
+                                                html.H4("Expiring Users", className="card-title"),
                                                 html.H3(id="expiring-number-placeholder", className="card-text")
                                             ]
                                         ),
@@ -180,17 +180,37 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Placeholder for right column
-
-                        html.H4("User Ratings Overview",
-                                style={"marginTop": "20px", "textAlign": "left", 'paddingLeft':'30px', 'marginBottom':  '10px'}),
-                        dvc.Vega(id='rating_graph', spec={}),
-                        html.H4("User Purchase History", style={
-                                "marginTop": "20px", "textAlign": "left", 'paddingLeft': '30px', 'marginBottom':  '10px'}),
-                        dvc.Vega(id='purchase_graph', spec={}),
-                        html.H4("User Engagement Levels", style={
-                                "marginTop": "20px", "textAlign": "left", 'paddingLeft': '30px', 'marginBottom':  '10px'}),
-
-                        dvc.Vega(id='engagement_graph', spec={})
+                        dbc.Card([
+                            dbc.CardHeader('User Ratings Overview',
+                                           style={"textAlign": "left",
+                                                  'paddingLeft': '20px',
+                                                  'fontWeight': 'bold'}),
+                            dbc.CardBody(
+                                dvc.Vega(id='rating_graph',spec={}))], 
+                            style={"marginTop": "10px",
+                                   'width': '100%', 
+                                   'height':'24%'}),
+                                
+                        dbc.Card([
+                            dbc.CardHeader('User Purchase History', 
+                                           style={"textAlign": "left",
+                                                  'paddingLeft': '20px', 'fontWeight': 'bold'}),
+                                                
+                            dbc.CardBody(
+                                dvc.Vega(id='purchase_graph', spec={}))],
+                            style={"marginTop": "10px", 
+                                   'width': '100%', 
+                                   'height': '24%'}),
+                                
+                        dbc.Card([
+                            dbc.CardHeader('User Engagement Levels', 
+                                           style={"textAlign": "left",
+                                                  'paddingLeft': '20px', 'fontWeight': 'bold'}),
+                            dbc.CardBody(
+                                dvc.Vega(id='engagement_graph', spec={}))],
+                            style={"marginTop": "10px", 
+                                   'width': '100%', 
+                                   'height': '19%'}),
                     ],
                     width=5,
                 ),
