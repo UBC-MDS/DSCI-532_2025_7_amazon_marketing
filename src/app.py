@@ -4,6 +4,7 @@ import dash_vega_components as dvc
 from datetime import datetime
 import pandas as pd
 import altair as alt
+import numpy as np
 
 
 # Initialize the Dash app
