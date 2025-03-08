@@ -14,7 +14,7 @@ server = app.server
 # Process and load the data directly
 def processed_data():
     # Load the raw data
-    data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
+    data = pd.read_csv("data/raw/amazon_prime_users.csv", sep=";", 
                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
                        dayfirst=True)
 
@@ -29,14 +29,14 @@ def processed_data():
 
 df = processed_data()
 
-renewal_checkbox = dbc.Checklist(
+renewal_checkbox = dbc.RadioItems(
                             id="renewal-checklist",
                             options=[
                                 {"label": "Manual", "value": "Manual"},
                                 {"label": "Auto Renew", "value": "Auto-renew"},
                                 {"label": "Both", "value": "Both-Manual-Auto-renew"},
                             ],
-                            value=['Manual', 'Auto-renew', 'Both'],
+                            value="Both-Manual-Auto-renew",
                             inline=False,  
                             style={
                                 "display": "flex",
@@ -44,12 +44,12 @@ renewal_checkbox = dbc.Checklist(
                                 "alignItems": "start",  
                                 "justifyContent": "center",
                                 "fontSize": "16px",  
-                                "paddingLeft": "100px",  
-                                "marginBottom": "30px"
+                                "paddingLeft": "50px",  
+                                "marginBottom": "20px"
                             }
                         )
 
-gender_checkbox = dbc.Checklist(
+gender_checkbox = dbc.RadioItems(
                             id="gender-checklist",
                             options=[
                                 {"label": "Male", "value": "Male"},
@@ -57,7 +57,7 @@ gender_checkbox = dbc.Checklist(
                                 {"label": "Both", "value": "Both-Male-Female"},
 
                             ],
-                            value=["Male", "Female", 'Both'],
+                            value="Both-Male-Female",
                             inline=False, 
                             style={
                                 "display": "flex",
@@ -65,8 +65,8 @@ gender_checkbox = dbc.Checklist(
                                 "alignItems": "start",  
                                 "justifyContent": "center",
                                 "fontSize": "16px",  
-                                "paddingLeft": "100px",  
-                                "marginBottom": "30px"
+                                "paddingLeft": "50px",  
+                                "marginBottom": "20px"
                             }
                         )
 
@@ -79,7 +79,7 @@ age_range_slider = html.Div(dcc.RangeSlider(
                                 value=[0, 100],  
                                 tooltip={"placement": "bottom", "always_visible": True, "style": {"fontSize": "16px"}},
                             ), 
-                            style={"marginBottom": "30px"},
+                            style={"marginBottom": "20px"},
                             )
 
 date_range_radio = dbc.RadioItems(
@@ -105,7 +105,7 @@ date_range_radio = dbc.RadioItems(
 Expiring_Members_Table = (dash_table.DataTable(
                             id="expiring-table-placeholder",
                             page_size=20, 
-                            style_table={'height': '700px', 'overflowY': 'auto'},  # Set a larger scrollable height
+                            style_table={'height': '360px', 'overflowY': 'auto'},  # Set a larger scrollable height
                             filter_action="native",  # Allow column filtering
                             sort_action="native",  # Allow sorting by column
                             page_action="native",  # Remove pagination and show all rows
@@ -279,6 +279,16 @@ app.layout = dbc.Container(
 )
 def update_users_and_table(renewal_values, gender_values, age_range, date_range_values):
     # Start with the entire dataset
+    if renewal_values == "Both-Manual-Auto-renew":
+        renewal_values = ['Auto-renew', 'Manual']
+    else:
+        renewal_values = [renewal_values]
+    
+    if gender_values == "Both-Male-Female":
+        gender_values = ['Male', 'Female']
+    else:
+        gender_values = [gender_values]
+        
     df_filtered = df[
         (df['Gender'].isin(gender_values)) &
         (df['Renewal Status'].isin(renewal_values)) &
@@ -329,7 +339,7 @@ def update_rating_graph(data):
                  alt.Tooltip('Feedback/Ratings', title='Ratings'),
                  alt.Tooltip('density:Q', title='Density')]
     ).properties(
-        height = 120, 
+        height = 110, 
     ).configure_axis(
         labelFontSize = 12, 
         titleFontSize = 14  
