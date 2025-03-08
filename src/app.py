@@ -343,30 +343,30 @@ def update_purchase_graph(renew, gender, age_range, date_range):
     Output("engagement_graph", "spec"),
     Input("expiring-table-placeholder", "derived_virtual_data")
 )
-def update_engagement_graph(renew, gender, age_range, date_range):
-    df_filtered = df[
-        (df['Gender'].isin(gender)) &
-        (df['Renewal Status'].isin(renew)) &
-        (df['Age'].between(age_range[0], age_range[1])) &
-        (df['Months Till Expire'] <= date_range)
-    ]
-    engagement_graph = alt.Chart(df_filtered).mark_bar(size=75).encode(
-        x=alt.X('Engagement Metrics', axis=alt.Axis(labelAngle=0),title="Engagment Level"),
-        y=alt.Y('count()', title='Count'),
-        color=alt.Color('Gender', legend=alt.Legend(symbolSize=200)),
-        tooltip=['count()']
+def update_engagement_graph(data):
+    data = pd.DataFrame(data)
+    engagement_graph = alt.Chart(data, width='container').mark_bar(size=15).encode(
+        y=alt.Y('Engagement Metrics', 
+                sort=['High', 'Medium', 'Low'],
+                title=None),
+        x=alt.X('count()', title='Count'),
+        color=alt.Color('Gender', 
+                        legend=alt.Legend(symbolSize=200), 
+                        scale=alt.Scale(
+                            domain=['Male', 'Female'], 
+                            range=['dodgerblue', 'crimson'])),
+        tooltip=[alt.Tooltip('Gender'),
+                 alt.Tooltip('count()', title='Count')],
+        order=alt.Order('Gender:N', sort='ascending')
     ).properties(
-
-        width=375,
-        height=200
+        height=75
     ).configure_axis(
-        labelFontSize=14,
-        titleFontSize=16
+        labelFontSize=12,
+        titleFontSize=14
     ).configure_legend(
-        labelFontSize=14,
-        titleFontSize=16
-
-    ).interactive().to_dict()
+        labelFontSize=12,
+        titleFontSize=14
+    ).to_dict()
     return engagement_graph
 
 if __name__ == "__main__":
