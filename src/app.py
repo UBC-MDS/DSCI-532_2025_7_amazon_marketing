@@ -13,7 +13,7 @@ server = app.server
 # Process and load the data directly
 def processed_data():
     # Load the raw data
-    data = pd.read_csv("data/raw/amazon_prime_users.csv", sep=";", 
+    data = pd.read_csv("../data/raw/amazon_prime_users.csv", sep=";", 
                        parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
                        dayfirst=True)
 
@@ -27,76 +27,60 @@ def processed_data():
 
 df = processed_data()
 
-# Define the layout of the app
-app.layout = dbc.Container(
-    [
-        dbc.Row(
-            [
-                # Left column for filters
-                dbc.Col(
-                    [
-                        # Title
-
-                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "30px", "marginBottom": "30px"}),
-
-
-
-                        # Renewal checkboxes 
-                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
-                        dbc.Checklist(
+renewal_checkbox = dbc.Checklist(
                             id="renewal-checklist",
                             options=[
                                 {"label": "Manual", "value": "Manual"},
                                 {"label": "Auto Renew", "value": "Auto-renew"},
+                                {"label": "Both", "value": "Both-Manual-Auto-renew"},
                             ],
-                            value=['Manual', 'Auto-renew'],
+                            value=['Manual', 'Auto-renew', 'Both'],
                             inline=False,  
                             style={
                                 "display": "flex",
                                 "flexDirection": "column",
-                                "alignItems": "center",  
+                                "alignItems": "start",  
+                                "justifyContent": "center",
                                 "fontSize": "16px",  
+                                "paddingLeft": "100px",  
                                 "marginBottom": "30px"
                             }
-                        ),
+                        )
 
-                        # Gender checkboxes 
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
-                        dbc.Checklist(
+gender_checkbox = dbc.Checklist(
                             id="gender-checklist",
                             options=[
                                 {"label": "Male", "value": "Male"},
                                 {"label": "Female", "value": "Female"},
+                                {"label": "Both", "value": "Both-Male-Female"},
+
                             ],
-                            value=["Male", "Female"],
+                            value=["Male", "Female", 'Both'],
                             inline=False, 
                             style={
                                 "display": "flex",
                                 "flexDirection": "column",
-                                "alignItems": "center", 
-                                "fontSize": "16px", 
+                                "alignItems": "start",  
+                                "justifyContent": "center",
+                                "fontSize": "16px",  
+                                "paddingLeft": "100px",  
                                 "marginBottom": "30px"
                             }
-                        ),
+                        )
 
-                        # Age range slider
-                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
-                        html.Div(
-                            dcc.RangeSlider(
+age_range_slider = html.Div(dcc.RangeSlider(
                                 id="age-range-filter",
-                                min=0,
-                                max=100,
-                                step=10,
+                                min=df["Age"].min(),
+                                max=df["Age"].max(),
+                                step=1,
+                                marks={i: str(i) for i in range(15, df["Age"].max(), 10)},
                                 value=[0, 100],  
-                            ),
-                            style={"marginBottom": "20px"}
-                        ),
+                                tooltip={"placement": "bottom", "always_visible": True, "style": {"fontSize": "16px"}},
+                            ), 
+                            style={"marginBottom": "30px"},
+                            )
 
-                        # Date range RadioItems 
-
-                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "20px"}),
-
-                        dbc.RadioItems(
+date_range_radio = dbc.RadioItems(
                             id="date-range-checklist",
                             options=[
                                 {"label": "1 Month", "value": 1},
@@ -113,54 +97,10 @@ app.layout = dbc.Container(
                                 "fontSize": "16px",  
                                 "marginBottom": "20px"
                             }
-                        ),
-                    ],
-                    width=2,
-                ),
-                # Middle column
-                dbc.Col(
-                    [
-                        # Row for the cards
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    dbc.Card(
-                                        dbc.CardBody(
-                                            [
-                                                html.H4("Current Users", className="card-title"),
-                                                html.H3(id="current-number-placeholder", className="card-text")
-                                            ]
-                                        ),
-                                        color="success", 
-                                        inverse=True, 
+                        )
 
-                                        style={"marginTop": "30px"}
 
-                                    ),
-                                    width=6
-                                ),
-                                dbc.Col(
-                                    dbc.Card(
-                                        dbc.CardBody(
-                                            [
-                                                html.H4("Expired Users", className="card-title"),
-                                                html.H3(id="expiring-number-placeholder", className="card-text")
-                                            ]
-                                        ),
-                                        color="danger", 
-                                        inverse=True,
-
-                                        style={"marginTop": "30px"}
-
-                                    ),
-                                    width=6
-                                ),
-                            ]
-                        ),
-
-                        # Table for expiring members
-                        html.H2("Expiring Members", style={"marginTop": "50px"}),
-                        dash_table.DataTable(
+Expiring_Members_Table = (dash_table.DataTable(
                             id="expiring-table-placeholder",
                             columns=[],  # Set the columns dynamically from the filtered DataFrame
                             data=[],  # Convert filtered DataFrame to records for DataTable
@@ -172,16 +112,91 @@ app.layout = dbc.Container(
                             # Align text in the cells to the left
                             style_cell={'textAlign': 'left',
                                         "fontSize": "12px"},
+                        ))
+
+Current_Members_Card = dbc.Card(dbc.CardBody(
+                                            [
+                                                html.H4("Current Users", className="card-title"),
+                                                html.H3(id="current-number-placeholder", className="card-text")
+                                            ]
+                                        ),
+                                        color="success", 
+                                        inverse=True, 
+
+                                        style={"marginTop": "30px"}
+
+                                    )
+
+Expired_Members_Card = dbc.Card(dbc.CardBody(
+                                            [
+                                                html.H4("Expired Users", className="card-title"),
+                                                html.H3(id="expiring-number-placeholder", className="card-text")
+                                            ]
+                                        ),
+                                        color="danger", 
+                                        inverse=True,
+
+                                        style={"marginTop": "30px"}
+
+                                    )
+
+# Define the layout of the app
+app.layout = dbc.Container(
+    [
+        dbc.Row(
+            [
+                # Left column for filters
+                dbc.Col(
+                    [
+                        # Title
+                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "20px", "marginBottom": "20px", "fontSize": "50px"}),
+
+                        # Renewal checkboxes 
+                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        (renewal_checkbox), 
+
+                        # Gender checkboxes 
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        (gender_checkbox),
+
+                        # Age range slider
+                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        (age_range_slider),
+                        
+                        # Date range RadioItems 
+                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "10px", "fontSize": "25px"}),
+                        (date_range_radio),
+                    ],
+                    width=2,
+                    style={"backgroundColor": "#FF9900", "padding": "20px", "borderRadius": "10px"},  
+                ),
+
+                # Middle column
+                dbc.Col(
+                    [
+                        # Row for the cards
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                (Current_Members_Card),
+                                    width=6
+                                ),
+                                dbc.Col((Expired_Members_Card),
+                                    width=6, 
+                                ),
+                            ]
                         ),
+                        # Table for expiring members
+                        html.H2("Expiring Members", style={"marginTop": "50px"}),
+                        (Expiring_Members_Table),
                     ],
                     width=5,
+                    style={"backgroundColor": "#f8f9fa", "padding": "20px", "borderRadius": "10px"}  
                 ),
                 
                 # Right column
                 dbc.Col(
                     [
-                        # Placeholder for right column
-
                         html.H4("User Ratings Overview",
                                 style={"marginTop": "20px", "textAlign": "left", 'paddingLeft':'30px', 'marginBottom':  '10px'}),
                         dvc.Vega(id='rating_graph', spec={}),
@@ -195,7 +210,8 @@ app.layout = dbc.Container(
                     ],
                     width=5,
                 ),
-            ]
+            ], 
+            style={"backgroundColor": "#f8f9fa", "padding": "20px", "borderRadius": "10px"} 
         ),
         dbc.Row(
             dbc.Col(
@@ -203,7 +219,6 @@ app.layout = dbc.Container(
                     [
                         html.P(
                             "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
-
                             style={"fontSize": "14px", "marginTop": "5px", "textAlign": "center"}
                         ),
                         html.P(
@@ -217,7 +232,6 @@ app.layout = dbc.Container(
                         html.P(
                             f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
                             style={"fontSize": "14px", "textAlign": "center"}
-
                         ),
                     ], 
                     style={"marginBottom": "14px"},
@@ -373,4 +387,4 @@ def update_engagement_graph(renew, gender, age_range, date_range):
     return engagement_graph
 
 if __name__ == "__main__":
-    app.server.run()
+    app.server.run(debug = True)
