@@ -162,8 +162,6 @@ app.layout = dbc.Container(
                         html.H2("Expiring Members", style={"marginTop": "50px"}),
                         dash_table.DataTable(
                             id="expiring-table-placeholder",
-                            columns=[],  # Set the columns dynamically from the filtered DataFrame
-                            data=[],  # Convert filtered DataFrame to records for DataTable
                             page_size=20, 
                             style_table={'height': '700px', 'overflowY': 'auto'},  # Set a larger scrollable height
                             filter_action="native",  # Allow column filtering
@@ -173,6 +171,7 @@ app.layout = dbc.Container(
                             style_cell={'textAlign': 'left',
                                         "fontSize": "12px"},
                         ),
+                        
                     ],
                     width=5,
                 ),
@@ -256,9 +255,16 @@ def update_users_and_table(renewal_values, gender_values, age_range, date_range_
     expired_users = df[df["Months Till Expire"] == 0].index.nunique()
 
     # Prepare the table for expiring members (only the selected columns)
-    expiring_members = df_filtered[["Name", "Email Address", "Membership End Date"]].reset_index()
+    expiring_members = df_filtered[[
+        "User ID", "Name", "Email Address", "Membership End Date", "Gender", "Purchase History", "Engagement Metrics", "Feedback/Ratings"]]
     
-    columns = [{"name": col, "id": col} for col in expiring_members.columns]
+    columns_type = [
+        ("User ID", "numeric"), ("Name", "text"), 
+        ("Email Address","text"), ("Membership End Date", "datetime")
+        ]
+    columns = [
+        {"name": col, "id": col, "type": type} for col, type in columns_type
+    ]
 
     # Return the updated table with filtered data
     return current_users, expired_users, expiring_members.to_dict('records'), columns
@@ -267,10 +273,7 @@ def update_users_and_table(renewal_values, gender_values, age_range, date_range_
 # callback for rating distribution graph
 @app.callback(
     Output("rating_graph", "spec"),
-    [Input("renewal-checklist", "value"),
-     Input("gender-checklist", "value"),
-     Input("age-range-filter", "value"),
-     Input("date-range-checklist", "value")]
+    Input("expiring-table-placeholder", "derived_virtual_data")
 )
 def update_rating_graph(renew, gender, age_range, date_range):
     df_filtered = df[
@@ -305,10 +308,7 @@ def update_rating_graph(renew, gender, age_range, date_range):
 # callback for purchase history graph
 @app.callback(
     Output("purchase_graph", "spec"),
-    [Input("renewal-checklist", "value"),
-     Input("gender-checklist", "value"),
-     Input("age-range-filter", "value"),
-     Input("date-range-checklist", "value")]
+    Input("expiring-table-placeholder", "derived_virtual_data")
 )
 
 def update_purchase_graph(renew, gender, age_range, date_range):
@@ -341,10 +341,7 @@ def update_purchase_graph(renew, gender, age_range, date_range):
 # callback for user engagement graph
 @app.callback(
     Output("engagement_graph", "spec"),
-    [Input("renewal-checklist", "value"),
-     Input("gender-checklist", "value"),
-     Input("age-range-filter", "value"),
-     Input("date-range-checklist", "value")]
+    Input("expiring-table-placeholder", "derived_virtual_data")
 )
 def update_engagement_graph(renew, gender, age_range, date_range):
     df_filtered = df[
