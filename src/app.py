@@ -5,6 +5,8 @@ from datetime import datetime
 import pandas as pd
 import altair as alt
 import numpy as np
+from dash import callback_context as ctx
+from dash.exceptions import PreventUpdate
 
 
 # Initialize the Dash app
@@ -140,6 +142,17 @@ Expired_Members_Card = dbc.Card(dbc.CardBody(
 
                                     )
 
+download_csv = dbc.Row(
+    dbc.Col(
+        [
+            dbc.Button("Download CSV", id="download-csv-btn", color="primary", className="mt-2"),
+            dcc.Download(id="download-csv")
+        ],
+        width="auto",
+        className="text-center"
+    )
+)
+
 # Define the layout of the app
 app.layout = dbc.Container(
     [
@@ -189,6 +202,11 @@ app.layout = dbc.Container(
                         # Table for expiring members
                         html.H2("Expiring Members", style={"marginTop": "50px"}),
                         (Expiring_Members_Table),
+                        html.Div(
+                            dbc.Button("Download CSV", id="download-csv-btn", color="primary", className="mt-2"),
+                            style={"textAlign": "center", "marginTop": "10px"}
+                        ),
+                        dcc.Download(id="download-csv"),
                     ],
                     width=5,
                     style={"backgroundColor": "#f8f9fa", "padding": "10px", "borderRadius": "10px"}  
@@ -315,6 +333,39 @@ def update_users_and_table(renewal_values, gender_values, age_range, date_range_
     # Return the updated table with filtered data
     return current_users, expiring_users, expiring_members.to_dict('records'), columns
 
+# Callback for downloading csv file
+@app.callback(
+    Output("download-csv", "data"),
+    Input("download-csv-btn", "n_clicks"),
+    Input("renewal-checklist", "value"),
+    Input("gender-checklist", "value"),
+    Input("age-range-filter", "value"),
+    Input("date-range-checklist", "value"),
+    prevent_initial_call=True
+)
+def download_csv(n_clicks, renewal_values, gender_values, age_range, date_range_values):
+    if not ctx.triggered or ctx.triggered[0]["prop_id"] != "download-csv-btn.n_clicks":
+        raise PreventUpdate
+
+    if renewal_values == "Both-Manual-Auto-renew":
+        renewal_values = ['Auto-renew', 'Manual']
+    else:
+        renewal_values = [renewal_values]
+
+    if gender_values == "Both-Male-Female":
+        gender_values = ['Male', 'Female']
+    else:
+        gender_values = [gender_values]
+    
+    df_filtered = df[
+        (df['Gender'].isin(gender_values)) &
+        (df['Renewal Status'].isin(renewal_values)) &
+        (df['Age'].between(age_range[0], age_range[1])) &
+        (df['Months Till Expire'] <= date_range_values)
+    ]
+
+    expiring_members = df_filtered[["User ID", "Name", "Email Address", "Membership End Date"]].reset_index(drop=True)
+    return dcc.send_data_frame(expiring_members.to_csv, "Expiring_Members.csv", index=False)
 
 # callback for rating distribution graph
 @app.callback(
