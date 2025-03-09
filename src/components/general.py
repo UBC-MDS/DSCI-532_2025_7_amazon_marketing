@@ -1,7 +1,7 @@
 
 import dash_bootstrap_components as dbc
 from dash import html, dcc
-from data.data import data
+from .data import data
 
 
 df = data
