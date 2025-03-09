@@ -253,30 +253,29 @@ app.layout = dbc.Container(
             style={"backgroundColor": "#f8f9fa", "padding": "10px", "borderRadius": "10px"} 
         ),
         dbc.Row(
-            dbc.Col(
-                html.Div(
-                    [
-                        html.P(
-                            "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
-                            style={"fontSize": "14px", "marginTop": "5px", "textAlign": "center"}
-                        ),
-                        html.P(
-                            "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
-                            style={"fontSize": "14px", "textAlign": "center"}
-                        ),
-                        html.P(
-                            html.A("View the repository on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing", target="_blank"),
-                            style={"fontSize": "14px", "textAlign": "center"}
-                        ),
-                        html.P(
-                            f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
-                            style={"fontSize": "14px", "textAlign": "center"}
-                        ),
-                    ], 
-                    style={"marginBottom": "14px"},
-                ),
-                width=12,
-            )
+            [
+                dbc.Col(html.P(
+                    "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
+                    style={"fontSize": "14px", "textAlign": "center"}
+                ), width="auto"),
+
+                dbc.Col(html.P(
+                    "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
+                    style={"fontSize": "14px", "textAlign": "center"}
+                ), width="auto"),
+
+                dbc.Col(html.P(
+                    html.A("View the repository on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing", target="_blank"),
+                    style={"fontSize": "14px", "textAlign": "center"}
+                ), width="auto"),
+
+                dbc.Col(html.P(
+                    f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
+                    style={"fontSize": "14px", "textAlign": "center"}
+                ), width="auto"),
+            ],
+            justify="center",  
+            style={"marginTop": "10px", "marginBottom": "10px"} 
         ),
     ],
     fluid=True,
