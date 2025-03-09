@@ -3,11 +3,11 @@ import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from datetime import datetime
 
-from data import data
-from components import renewal_checkbox, gender_checkbox, age_range_slider, date_range_radio, download_csv
-from components import Expiring_Members_Table, Current_Members_Card, Expired_Members_Card
-from callbacks import register_chart_callbacks
-from callbacks import register_table_callbacks
+from .data import data
+from .components import renewal_checkbox, gender_checkbox, age_range_slider, date_range_radio, download_csv
+from .components import Expiring_Members_Table, Current_Members_Card, Expired_Members_Card
+from .callbacks import register_chart_callbacks
+from .callbacks import register_table_callbacks
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
