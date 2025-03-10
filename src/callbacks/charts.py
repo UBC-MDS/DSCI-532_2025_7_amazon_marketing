@@ -1,7 +1,6 @@
 from dash import Output, Input
 import altair as alt
 import pandas as pd
-alt.data_transformers.enable('default', max_rows=50000)
 
 def register_chart_callbacks(app):
     @app.callback(
