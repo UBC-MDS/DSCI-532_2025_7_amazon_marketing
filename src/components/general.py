@@ -84,14 +84,14 @@ date_range_radio = dbc.RadioItems(
                         )
 
 
-download_csv = dbc.Row(
-    dbc.Col(
-        [
-            dbc.Button("Download CSV", id="download-csv-btn", color="primary", className="mt-2"),
-            dcc.Download(id="download-csv")
-        ],
-        width="auto",
-        className="text-center"
-    )
+download_csv = dbc.Col(
+    [
+        dbc.Button("Download CSV", id="download-csv-btn", color="primary", className="mt-2", size='sm'),
+        dcc.Download(id="download-csv")
+    ],
+    width="auto", 
+    className="text-center",
+    style={"marginTop": "30px"}
 )
+
 

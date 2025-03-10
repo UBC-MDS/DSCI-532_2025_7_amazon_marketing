@@ -43,7 +43,7 @@ app.layout = dbc.Container(
                         (date_range_radio),
                     ],
                     width=2,
-                    style={"backgroundColor": "#FF9900", "padding": "10px", "borderRadius": "10px"},  
+                    style={"backgroundColor": "#FF9900", "padding": "10px", "borderRadius": "10px", 'marginTop': '10px'},  
                 ),
 
                 # Middle column
@@ -52,27 +52,25 @@ app.layout = dbc.Container(
                         # Row for the cards
                         dbc.Row(
                             [
-                                dbc.Col(
-                                (Current_Members_Card),
-                                    width=6
-                                ),
-                                dbc.Col((Expired_Members_Card),
-                                    width=6, 
-                                ),
+                                dbc.Col((Current_Members_Card), width=6),
+                                dbc.Col((Expired_Members_Card), width=6),
                             ]
                         ),
                         # Table for expiring members
-                        html.H2("Expiring Members", style={"marginTop": "50px"}),
-                        (Expiring_Members_Table),
-                        html.Div(
-                            dbc.Button("Download CSV", id="download-csv-btn", color="primary", className="mt-2"),
-                            style={"textAlign": "center", "marginTop": "10px"}
+                        dbc.Row(
+                            [
+                                dbc.Col(html.H3("Expiring Members", 
+                                                style={"marginTop": "35px"})),
+                                (download_csv)
+                            ]
                         ),
-                        dcc.Download(id="download-csv"),
+                        (Expiring_Members_Table),
                     ],
                     width=5,
-                    style={"backgroundColor": "#f8f9fa", "padding": "10px", "borderRadius": "10px"}  
+                    style={"backgroundColor": "#f8f9fa",
+                           "paddingLeft": "30px", }
                 ),
+
                 
                 # Right column
                 dbc.Col(
@@ -109,6 +107,8 @@ app.layout = dbc.Container(
                                    'height': '26%'}),
                     ],
                     width=5,
+                    style={"backgroundColor": "#f8f9fa",
+                           "paddingLeft": "20px", }
                 ),
             ], 
             style={"backgroundColor": "#f8f9fa", "padding": "10px", "borderRadius": "10px"} 
@@ -119,7 +119,12 @@ app.layout = dbc.Container(
                     "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
                     style={"fontSize": "14px", "textAlign": "center"}
                 ), width="auto"),
-
+            ],
+            justify="center",
+            style={"marginTop": "10px"}
+        ),
+        dbc.Row(
+            [
                 dbc.Col(html.P(
                     "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
                     style={"fontSize": "14px", "textAlign": "center"}
@@ -136,14 +141,14 @@ app.layout = dbc.Container(
                 ), width="auto"),
             ],
             justify="center",  
-            style={"marginTop": "10px", "marginBottom": "10px"} 
+            style={"marginBottom": "10px"} 
         ),
     ],
     fluid=True,
 )
 
-register_chart_callbacks(app)
 register_table_callbacks(app, df)
+register_chart_callbacks(app)
 
 if __name__ == "__main__":
     app.server.run(debug = True)
