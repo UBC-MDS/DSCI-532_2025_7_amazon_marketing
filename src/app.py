@@ -6,6 +6,7 @@ from datetime import datetime
 from .data import data
 from .components import renewal_checkbox, gender_checkbox, age_range_slider, date_range_radio, download_csv
 from .components import Expiring_Members_Table, Current_Members_Card, Expired_Members_Card
+from .components import Ratings_chart, Purchase_history_chart, Engagement_chart
 from .callbacks import register_chart_callbacks
 from .callbacks import register_table_callbacks
 
