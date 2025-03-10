@@ -7,7 +7,7 @@ Ratings_chart = dbc.Card(
                            'paddingLeft': '20px',
                            'fontWeight': 'bold'}),
      dbc.CardBody(dvc.Vega(id='rating_graph', spec={}))],
-     style={'width': '100%','height': '32%', 'marginTop': '20px'})
+     style={'width': '100%','height': '32%', 'marginTop': '15px'})
 
 Purchase_history_chart = dbc.Card(
     [dbc.CardHeader('User Purchase History',
@@ -15,11 +15,11 @@ Purchase_history_chart = dbc.Card(
                           'paddingLeft': '20px', 
                           'fontWeight': 'bold'}),
      dbc.CardBody(dvc.Vega(id='purchase_graph', spec={}))],
-     style={"marginTop": "10px", 'width': '100%', 'height': '32%'})
+     style={"marginTop": "15px", 'width': '100%', 'height': '32%'})
 
 Engagement_chart = dbc.Card(
     [dbc.CardHeader('User Engagement Levels',
                     style={"textAlign": "left",
                            'fontWeight': 'bold'}),
     dbc.CardBody(dvc.Vega(id='engagement_graph', spec={}))],
-    style={"marginTop": "10px", 'width': '100%', 'height': '27%'})
+    style={"marginTop": "15px", 'width': '100%', 'height': '26%'})

@@ -44,7 +44,8 @@ app.layout = dbc.Container(
                         (date_range_radio),
                     ],
                     width=2,
-                    style={"backgroundColor": "#FF9900", "padding": "10px", "borderRadius": "10px", 'marginTop': '10px'},  
+                    style={"backgroundColor": "#FF9900", "padding": "10px",
+                           'marginTop': '10px', "borderRadius": "10px"},  
                 ),
 
                 # Middle column
@@ -61,7 +62,7 @@ app.layout = dbc.Container(
                         dbc.Row(
                             [
                                 dbc.Col(html.H3("Expiring Members", 
-                                                style={"marginTop": "35px"})),
+                                                style={"marginTop": "30px"})),
                                 (download_csv)
                             ]
                         ),
@@ -85,37 +86,37 @@ app.layout = dbc.Container(
                            "paddingLeft": "20px", }
                 ),
             ], 
-            style={"backgroundColor": "#f8f9fa", "padding": "10px", "borderRadius": "10px"} 
+            style={"backgroundColor": "#f8f9fa", "paddingTop": "5px",
+                   'paddingLeft': "20px", "borderRadius": "10px"} 
         ),
         dbc.Row(
             [
                 dbc.Col(html.P(
                     "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
-                    style={"fontSize": "14px", "textAlign": "center"}
+                    style={"fontSize": "12px", "textAlign": "center"}
                 ), width="auto"),
             ],
             justify="center",
-            style={"marginTop": "10px"}
+            style={"marginTop": "5px"}
         ),
         dbc.Row(
             [
                 dbc.Col(html.P(
                     "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
-                    style={"fontSize": "14px", "textAlign": "center"}
+                    style={"fontSize": "12px", "textAlign": "center"}
                 ), width="auto"),
 
                 dbc.Col(html.P(
                     html.A("View the repository on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing", target="_blank"),
-                    style={"fontSize": "14px", "textAlign": "center"}
+                    style={"fontSize": "12px", "textAlign": "center"}
                 ), width="auto"),
 
                 dbc.Col(html.P(
                     f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
-                    style={"fontSize": "14px", "textAlign": "center"}
+                    style={"fontSize": "12px", "textAlign": "center"}
                 ), width="auto"),
             ],
-            justify="center",  
-            style={"marginBottom": "10px"} 
+            justify="center"
         ),
     ],
     fluid=True,

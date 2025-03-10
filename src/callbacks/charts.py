@@ -24,7 +24,7 @@ def register_chart_callbacks(app):
                      alt.Tooltip('Feedback/Ratings', title='Ratings'),
                      alt.Tooltip('density:Q', title='Density')]
         ).properties(
-            height=110,
+            height=120,
         ).configure_axis(
             labelFontSize=12,
             titleFontSize=14
@@ -55,7 +55,7 @@ def register_chart_callbacks(app):
                      alt.Tooltip('count()', title='Count')],
             order=alt.Order('Gender:N', sort='ascending')
         ).properties(
-            height=110
+            height=120
         ).configure_axis(
             labelFontSize=12,
             titleFontSize=14
@@ -85,7 +85,7 @@ def register_chart_callbacks(app):
                      alt.Tooltip('count()', title='Count')],
             order=alt.Order('Gender:N', sort='ascending')
         ).properties(
-            height=70
+            height=80
         ).configure_axis(
             labelFontSize=12,
             titleFontSize=14

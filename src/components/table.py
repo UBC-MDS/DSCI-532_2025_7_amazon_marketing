@@ -5,7 +5,7 @@ from dash import html, dash_table
 
 Expiring_Members_Table = (dash_table.DataTable(
                             id="expiring-table-placeholder",
-                            page_size=14, 
+                            page_size=15, 
                             style_table={'overflowY': 'auto'},  # Set a larger scrollable height
                             filter_action="native",  # Allow column filtering
                             sort_action="native",  # Allow sorting by column
@@ -24,7 +24,7 @@ Current_Members_Card = dbc.Card(dbc.CardBody(
                                         color="success", 
                                         inverse=True, 
 
-                                        style={"marginTop": "20px"}
+                                        style={"marginTop": "15px"}
 
                                     )
 
@@ -37,6 +37,6 @@ Expired_Members_Card = dbc.Card(dbc.CardBody(
                                         color="danger", 
                                         inverse=True,
 
-                                        style={"marginTop": "20px"}
+                                        style={"marginTop": "15px"}
 
                                     )

@@ -91,7 +91,7 @@ download_csv = dbc.Col(
     ],
     width="auto", 
     className="text-center",
-    style={"marginTop": "30px"}
+    style={"marginTop": "26px"}
 )
 
 
