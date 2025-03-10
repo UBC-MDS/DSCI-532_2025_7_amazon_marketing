@@ -75,36 +75,9 @@ app.layout = dbc.Container(
                 # Right column
                 dbc.Col(
                     [
-                        dbc.Card([
-                            dbc.CardHeader('User Ratings Overview',
-                                           style={"textAlign": "left",
-                                                  'paddingLeft': '20px',
-                                                  'fontWeight': 'bold'}),
-                            dbc.CardBody(
-                                dvc.Vega(id='rating_graph',spec={}))], 
-                            style={'width': '100%', 
-                                   'height':'32%'}),
-                                
-                        dbc.Card([
-                            dbc.CardHeader('User Purchase History', 
-                                           style={"textAlign": "left",
-                                                  'paddingLeft': '20px', 'fontWeight': 'bold'}),
-                                                
-                            dbc.CardBody(
-                                dvc.Vega(id='purchase_graph', spec={}))],
-                            style={"marginTop": "5px", 
-                                   'width': '100%', 
-                                   'height': '32%'}),
-                                
-                        dbc.Card([
-                            dbc.CardHeader('User Engagement Levels', 
-                                           style={"textAlign": "left",
-                                                  'paddingLeft': '20px', 'fontWeight': 'bold'}),
-                            dbc.CardBody(
-                                dvc.Vega(id='engagement_graph', spec={}))],
-                            style={"marginTop": "5px", 
-                                   'width': '100%', 
-                                   'height': '26%'}),
+                        (Ratings_chart),
+                        (Purchase_history_chart),       
+                        (Engagement_chart),
                     ],
                     width=5,
                     style={"backgroundColor": "#f8f9fa",
