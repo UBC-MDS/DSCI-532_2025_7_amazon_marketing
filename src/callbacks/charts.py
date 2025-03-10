@@ -31,7 +31,7 @@ def register_chart_callbacks(app):
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
+        ).to_dict(format='vega')
 
         return rating_graph
 
@@ -62,7 +62,7 @@ def register_chart_callbacks(app):
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
+        ).to_dict(format='vega')
         return purchase_graph
 
     @app.callback(
@@ -92,7 +92,7 @@ def register_chart_callbacks(app):
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
+        ).to_dict(format='vega')
         return engagement_graph
 
     
