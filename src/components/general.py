@@ -1,7 +1,12 @@
 
 import dash_bootstrap_components as dbc
 from dash import html, dcc
-from data import data
+
+import pandas as pd
+import numpy as np
+
+from ..data.data import data
+
 
 
 df = data
