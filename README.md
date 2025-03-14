@@ -47,7 +47,7 @@ If you're interested in running the app locally or contributing to its developme
 3.  **Install our conda environment** by running the following command-line command:
 
     ``` bash
-    conda env create -f environment.yml
+    conda env create -f environment.yaml
     ```
 
     Activate our conda environment by running the following command-line command:
