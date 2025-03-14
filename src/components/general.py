@@ -11,8 +11,8 @@ from ..data.data import data
 
 df = data
 
-renewal_checkbox = dbc.RadioItems(
-                            id="renewal-checklist",
+renewal_radiobutton = dbc.RadioItems(
+                            id="renewal_radiobutton",
                             options=[
                                 {"label": "Manual", "value": "Manual"},
                                 {"label": "Auto Renew", "value": "Auto-renew"},
@@ -31,8 +31,8 @@ renewal_checkbox = dbc.RadioItems(
                             }
                         )
 
-gender_checkbox = dbc.RadioItems(
-                            id="gender-checklist",
+gender_radiobutton = dbc.RadioItems(
+                            id="gender_radiobutton",
                             options=[
                                 {"label": "Male", "value": "Male"},
                                 {"label": "Female", "value": "Female"},
