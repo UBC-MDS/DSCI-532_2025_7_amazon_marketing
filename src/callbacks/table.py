@@ -52,11 +52,11 @@ def register_table_callbacks(app, df):
 
         # Prepare the table for expiring members (only the selected columns)
         expiring_members = df_filtered[[
-            "User ID", "Name", "Email Address", "Membership End Date", "Gender", "Purchase History", "Engagement Metrics", "Feedback/Ratings"]]
+            "Membership End Date", "User ID", "Name", "Email Address", "Gender", "Purchase History", "Engagement Metrics", "Feedback/Ratings"]]
         
         columns_type = [
-            ("User ID", "numeric"), ("Name", "text"), 
-            ("Email Address","text"), ("Membership End Date", "datetime")
+            ("Membership End Date", "datetime"), ("User ID", "numeric"), 
+            ("Name", "text"), ("Email Address","text")
             ]
         columns = [
             {"name": col, "id": col, "type": type} for col, type in columns_type
