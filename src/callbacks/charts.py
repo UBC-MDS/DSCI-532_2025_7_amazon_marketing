@@ -9,7 +9,7 @@ def register_chart_callbacks(app):
     )
     def update_rating_graph(data):
         data = pd.DataFrame(data)
-        rating_graph = alt.Chart(data, width='container', height='container').transform_density(
+        rating_graph = (alt.Chart(data, width='container', height='container').transform_density(
             'Feedback/Ratings',
             groupby=['Gender'],
             as_=['Feedback/Ratings', 'density']
@@ -29,9 +29,9 @@ def register_chart_callbacks(app):
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
+        ))
 
-        return rating_graph
+        return rating_graph.to_dict(format='vega')
 
     @app.callback(
         Output("purchase_graph", "spec"),
@@ -39,7 +39,7 @@ def register_chart_callbacks(app):
     )
     def update_purchase_graph(data):
         data = pd.DataFrame(data)
-        purchase_graph = alt.Chart(data, width='container', height='container').mark_bar(size=40).encode(
+        purchase_graph = (alt.Chart(data, width='container', height='container').mark_bar(size=40).encode(
             x=alt.X('Purchase History:N',
                     axis=alt.Axis(labelAngle=0),
                     title="Product Categories"),
@@ -58,8 +58,8 @@ def register_chart_callbacks(app):
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
-        return purchase_graph
+        ))
+        return purchase_graph.to_dict(format='vega')
 
     @app.callback(
         Output("engagement_graph", "spec"),
@@ -86,7 +86,7 @@ def register_chart_callbacks(app):
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        )).to_dict('vega')
+        ))
         return engagement_graph.to_dict(format='vega')
 
     
