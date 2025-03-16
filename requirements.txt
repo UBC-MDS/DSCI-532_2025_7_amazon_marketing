@@ -5,4 +5,4 @@ dash-vega-components==0.9.*
 altair==5.3.*
 pandas==2.2.*
 vega_datasets==0.9.*
-
+pyarrow==19.0.1
