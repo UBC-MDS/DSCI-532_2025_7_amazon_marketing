@@ -14,14 +14,14 @@ def register_chart_callbacks(app):
             groupby=['Gender'],
             as_=['Feedback/Ratings', 'density']
         ).mark_line(strokeWidth=3).encode(
-            x=alt.X('Feedback/Ratings', title="Ratings"),
+            x=alt.X('Feedback/Ratings:Q', title="Ratings"),
             y=alt.Y('density:Q', title='Density'),
-            color=alt.Color('Gender',
+            color=alt.Color('Gender:N',
                             legend=alt.Legend(symbolStrokeWidth=5), scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender'),
-                     alt.Tooltip('Feedback/Ratings', title='Ratings'),
+            tooltip=[alt.Tooltip('Gender:N'),
+                     alt.Tooltip('Feedback/Ratings:Q', title='Ratings'),
                      alt.Tooltip('density:Q', title='Density')]
         ).properties(
             height=120,
@@ -42,16 +42,16 @@ def register_chart_callbacks(app):
     def update_purchase_graph(data):
         data = pd.DataFrame(data)
         purchase_graph = alt.Chart(data, width='container').mark_bar(size=40).encode(
-            x=alt.X('Purchase History',
+            x=alt.X('Purchase History:N',
                     axis=alt.Axis(labelAngle=0),
                     title="Product Categories"),
             y=alt.Y('count()', title="Count"),
-            color=alt.Color('Gender',
+            color=alt.Color('Gender:N',
                             legend=alt.Legend(symbolSize=200),
                             scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender'),
+            tooltip=[alt.Tooltip('Gender:N'),
                      alt.Tooltip('count()', title='Count')],
             order=alt.Order('Gender:N', sort='ascending')
         ).properties(
@@ -72,16 +72,16 @@ def register_chart_callbacks(app):
     def update_engagement_graph(data):
         data = pd.DataFrame(data)
         engagement_graph = alt.Chart(data, width='container').mark_bar(size=15).encode(
-            y=alt.Y('Engagement Metrics',
+            y=alt.Y('Engagement Metrics:N',
                     sort=['High', 'Medium', 'Low'],
                     title=None),
             x=alt.X('count()', title='Count'),
-            color=alt.Color('Gender',
+            color=alt.Color('Gender:N',
                             legend=alt.Legend(symbolSize=200),
                             scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender'),
+            tooltip=[alt.Tooltip('Gender:N'),
                      alt.Tooltip('count()', title='Count')],
             order=alt.Order('Gender:N', sort='ascending')
         ).properties(

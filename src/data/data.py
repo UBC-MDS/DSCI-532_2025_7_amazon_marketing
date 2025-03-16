@@ -12,5 +12,7 @@ data["Months Till Expire"] = np.ceil(
 
 data["Membership End Date"] = data["Membership End Date"].dt.date
 
+cols = data.columns[np.r_[4, 8:16]]
+data[cols] = data[cols].astype('category')
 
 
