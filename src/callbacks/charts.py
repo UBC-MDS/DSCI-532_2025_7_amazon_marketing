@@ -9,7 +9,7 @@ def register_chart_callbacks(app):
     )
     def update_rating_graph(data):
         data = pd.DataFrame(data)
-        rating_graph = (alt.Chart(data, width='container', height='container').transform_density(
+        rating_graph = alt.Chart(data, width='container', height='container').transform_density(
             'Feedback/Ratings',
             groupby=['Gender'],
             as_=['Feedback/Ratings', 'density']
@@ -20,16 +20,14 @@ def register_chart_callbacks(app):
                             legend=alt.Legend(symbolStrokeWidth=5), scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender:N'),
-                     alt.Tooltip('Feedback/Ratings:Q', title='Ratings'),
-                     alt.Tooltip('density:Q', title='Density')]
+            tooltip=['Gender:N', 'Feedback/Ratings:Q', 'density:Q']
         ).configure_axis(
             labelFontSize=12,
             titleFontSize=14
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ))
+        )
 
         return rating_graph.to_dict(format='vega')
 
@@ -49,8 +47,7 @@ def register_chart_callbacks(app):
                             scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender:N'),
-                     alt.Tooltip('count()', title='Count')],
+            tooltip=['Gender:N', 'count():Q'],
             order=alt.Order('Gender:N', sort='ascending')
         ).configure_axis(
             labelFontSize=12,
@@ -77,8 +74,7 @@ def register_chart_callbacks(app):
                             scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender:N'),
-                     alt.Tooltip('count()', title='Count')],
+            tooltip=['Gender:N', 'count():Q'],
             order=alt.Order('Gender:N', sort='ascending')
         ).configure_axis(
             labelFontSize=12,
