@@ -21,7 +21,8 @@ Ratings_chart = html.Div([
                     "border-bottom-left-radius": "8px", 
                     "border-bottom-right-radius": "8px", 'backgroundColor': 'white', 
                     'padding': '2vh', 
-                    'paddingRight': '3vh'})
+                    'paddingRight': '3vh',
+                    'width': '36.85vw'})
     ], style={"marginTop": "1.5vh", 'width': '100%', 'height': '30vh'})
 
 
@@ -44,7 +45,8 @@ Purchase_history_chart = html.Div([
                         "border-bottom-left-radius": "8px", 
                         "border-bottom-right-radius": "8px", 'backgroundColor': 'white', 
                         'padding': '2vh', 
-                        'paddingRight': '3vh'})
+                        'paddingRight': '3vh',
+                        'width': '36.85vw'})
     ], style = {"marginTop": "1vh", 'width': '100%', 'height': '30vh'})
 
 
@@ -67,6 +69,7 @@ Engagement_chart = html.Div([
                         "border-bottom-left-radius": "8px", 
                         "border-bottom-right-radius": "8px", 'backgroundColor': 'white', 
                         'padding': '2vh', 
-                        'paddingRight': '3vh'})
+                        'paddingRight': '3vh',
+                        'width': '36.85vw'})
     ], style={"marginTop": "1vh", 'width': '100%', 'height': '25vh'})
 
