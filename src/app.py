@@ -82,9 +82,9 @@ app.layout = dbc.Container(
                 # Right column
                 dbc.Col(
                     [
-                        (Ratings_chart),
-                        (Purchase_history_chart),       
-                        (Engagement_chart),
+                        Ratings_chart,
+                        Purchase_history_chart,       
+                        Engagement_chart,
                     ],
                     width=5,
                     style={"backgroundColor": "#f8f9fa",
