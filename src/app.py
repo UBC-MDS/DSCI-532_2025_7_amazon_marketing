@@ -3,12 +3,12 @@ import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from datetime import datetime
 
-from .data import data
-from .components import renewal_radiobutton, gender_radiobutton, age_range_slider, date_range_radio, download_csv
-from .components import Expiring_Members_Table, Current_Members_Card, Expired_Members_Card
-from .components import Ratings_chart, Purchase_history_chart, Engagement_chart
-from .callbacks import register_chart_callbacks
-from .callbacks import register_table_callbacks, cache
+from src.data import data
+from src.components import renewal_radiobutton, gender_radiobutton, age_range_slider, date_range_radio, download_csv
+from src.components import Expiring_Members_Table, Current_Members_Card, Expired_Members_Card
+from src.components import Ratings_chart, Purchase_history_chart, Engagement_chart
+from src.callbacks import register_chart_callbacks
+from src.callbacks import register_table_callbacks, cache
 
 
 # Initialize the Dash app
