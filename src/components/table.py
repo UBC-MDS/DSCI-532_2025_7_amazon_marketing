@@ -5,14 +5,15 @@ from dash import html, dash_table
 
 Expiring_Members_Table = (dash_table.DataTable(
                             id="expiring-table-placeholder",
-                            page_size=15, 
-                            style_table={'overflowY': 'auto'},  # Set a larger scrollable height
+                            page_size=15,
+                            style_table={'overflowY': 'auto', 'height': '62vh'},  # Set a larger scrollable height
                             filter_action="native",  # Allow column filtering
                             sort_action="native",  # Allow sorting by column
                             page_action="native",  # Remove pagination and show all rows
                             # Align text in the cells to the left
                             style_cell={'textAlign': 'left',
-                                        "fontSize": "12px"},
+                                        "fontSize": "12px",
+                                        'height': "3.5vh"},
                         ))
 
 Current_Members_Card = dbc.Card(dbc.CardBody(
@@ -24,7 +25,7 @@ Current_Members_Card = dbc.Card(dbc.CardBody(
                                         color="success", 
                                         inverse=True, 
 
-                                        style={"marginTop": "15px"}
+                                        style={"marginTop": "2vh"}
 
                                     )
 
@@ -37,6 +38,6 @@ Expired_Members_Card = dbc.Card(dbc.CardBody(
                                         color="danger", 
                                         inverse=True,
 
-                                        style={"marginTop": "15px"}
+                                        style={"marginTop": "2vh"}
 
                                     )

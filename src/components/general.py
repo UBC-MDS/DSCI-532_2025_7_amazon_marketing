@@ -26,8 +26,8 @@ renewal_checkbox = dbc.RadioItems(
                                 "alignItems": "start",  
                                 "justifyContent": "center",
                                 "fontSize": "16px",  
-                                "paddingLeft": "50px",  
-                                "marginBottom": "20px"
+                                "paddingLeft": "4vw",  
+                                "marginBottom": "2vh"
                             }
                         )
 
@@ -47,8 +47,8 @@ gender_checkbox = dbc.RadioItems(
                                 "alignItems": "start",  
                                 "justifyContent": "center",
                                 "fontSize": "16px",  
-                                "paddingLeft": "50px",  
-                                "marginBottom": "20px"
+                                "paddingLeft": "4vw",  
+                                "marginBottom": "2vh"
                             }
                         )
 
@@ -61,7 +61,7 @@ age_range_slider = html.Div(dcc.RangeSlider(
                                 value=[0, 100],  
                                 tooltip={"placement": "bottom", "always_visible": True, "style": {"fontSize": "16px"}},
                             ), 
-                            style={"marginBottom": "20px"},
+                            style={"marginBottom": "2vh"},
                             )
 
 date_range_radio = dbc.RadioItems(
@@ -77,9 +77,11 @@ date_range_radio = dbc.RadioItems(
                             style={
                                 "display": "flex",
                                 "flexDirection": "column",
-                                "alignItems": "center",  
+                                "alignItems": "start",  
+                                "justifyContent": "center",
                                 "fontSize": "16px",  
-                                "marginBottom": "20px"
+                                "paddingLeft": "4vw",
+                                "marginBottom": "2vh"
                             }
                         )
 
@@ -91,7 +93,7 @@ download_csv = dbc.Col(
     ],
     width="auto", 
     className="text-center",
-    style={"marginTop": "26px"}
+    style={"marginTop": "2.6vh"}
 )
 
 

@@ -4,22 +4,22 @@ import dash_vega_components as dvc
 Ratings_chart = dbc.Card(
     [dbc.CardHeader('User Ratings Overview',
                     style={"textAlign": "left",
-                           'paddingLeft': '20px',
+                           'paddingLeft': '2vw',
                            'fontWeight': 'bold'}),
-     dbc.CardBody(dvc.Vega(id='rating_graph', spec={}))],
-     style={'width': '100%','height': '32%', 'marginTop': '15px'})
+     dbc.CardBody(dvc.Vega(id='rating_graph', spec={}, style={"height": '20vh'}))],
+     style={'width': '100%','height': '29vh', 'marginTop': '2vh'})
 
 Purchase_history_chart = dbc.Card(
     [dbc.CardHeader('User Purchase History',
                     style={"textAlign": "left",
-                          'paddingLeft': '20px', 
+                          'paddingLeft': '2vw', 
                           'fontWeight': 'bold'}),
-     dbc.CardBody(dvc.Vega(id='purchase_graph', spec={}))],
-     style={"marginTop": "15px", 'width': '100%', 'height': '32%'})
+     dbc.CardBody(dvc.Vega(id='purchase_graph', spec={}, style={"height": '20vh'}))],
+     style={"marginTop": "1.5vh", 'width': '100%', 'height': '29vh'})
 
 Engagement_chart = dbc.Card(
     [dbc.CardHeader('User Engagement Levels',
                     style={"textAlign": "left",
                            'fontWeight': 'bold'}),
-    dbc.CardBody(dvc.Vega(id='engagement_graph', spec={}))],
-    style={"marginTop": "15px", 'width': '100%', 'height': '26%'})
+     dbc.CardBody(dvc.Vega(id='engagement_graph', spec={}, style={"height": '15vh'}))],
+    style={"marginTop": "1.5vh", 'width': '100%', 'height': '24vh'})

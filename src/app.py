@@ -25,27 +25,27 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Title
-                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "10px", "marginBottom": "20px", "fontSize": "36px"}),
+                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "1vh", "marginBottom": "2vh", "fontSize": "36px"}),
 
                         # Renewal checkboxes 
-                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
                         (renewal_checkbox), 
 
                         # Gender checkboxes 
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
                         (gender_checkbox),
 
                         # Age range slider
-                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
                         (age_range_slider),
                         
                         # Date range RadioItems 
-                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
                         (date_range_radio),
                     ],
                     width=2,
                     style={"backgroundColor": "#FF9900", "padding": "10px",
-                           'marginTop': '10px', "borderRadius": "10px"},  
+                           'marginTop': '2vh', "borderRadius": "10px"},  
                 ),
 
                 # Middle column
@@ -62,7 +62,7 @@ app.layout = dbc.Container(
                         dbc.Row(
                             [
                                 dbc.Col(html.H3("Expiring Members", 
-                                                style={"marginTop": "30px"})),
+                                                style={"marginTop": "3vh"})),
                                 (download_csv)
                             ]
                         ),
@@ -70,7 +70,8 @@ app.layout = dbc.Container(
                     ],
                     width=5,
                     style={"backgroundColor": "#f8f9fa",
-                           "paddingLeft": "30px", }
+                           "paddingLeft": "3vw",
+                            'marginBottom':'2vh' }
                 ),
 
                 
@@ -83,11 +84,12 @@ app.layout = dbc.Container(
                     ],
                     width=5,
                     style={"backgroundColor": "#f8f9fa",
-                           "paddingLeft": "20px", }
+                           "paddingLeft": "2vw",
+                           'marginBottom': '2vh'}
                 ),
             ], 
-            style={"backgroundColor": "#f8f9fa", "paddingTop": "5px",
-                   'paddingLeft': "20px", "borderRadius": "10px"} 
+            style={"backgroundColor": "#f8f9fa", "paddingTop": "0.5vh",
+                   'paddingLeft': "2vw", "borderRadius": "10px"} 
         ),
         dbc.Row(
             [
@@ -97,7 +99,7 @@ app.layout = dbc.Container(
                 ), width="auto"),
             ],
             justify="center",
-            style={"marginTop": "5px"}
+            style={"marginTop": "0.5vh"}
         ),
         dbc.Row(
             [
