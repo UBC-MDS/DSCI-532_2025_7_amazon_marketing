@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 
-data = pd.read_csv("data/raw/amazon_prime_users.csv", sep=";", 
-                   parse_dates=["Membership Start Date", "Membership End Date", "Date of Birth"], 
-                   dayfirst=True)
+
+
+data = pd.read_feather("data/raw/amazon_prime_users.feather")
 
 # Process the data
 data["Age"] = (pd.Timestamp.today() - data["Date of Birth"]).dt.days // 365
