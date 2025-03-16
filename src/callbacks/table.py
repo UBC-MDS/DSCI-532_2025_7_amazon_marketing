@@ -34,9 +34,9 @@ def register_table_callbacks(app, df):
         ]
         
         # Calculate current and expired users
-        current_users = df[df["Months Till Expire"] > 0].index.nunique()
+        current_users = df[df["Months Till Expire"] > 0]['User ID'].nunique()
         
-        expiring_users = df_filtered.index.nunique()
+        expiring_users = df_filtered['User ID'].nunique()
 
         # Prepare the table for expiring members (only the selected columns)
         expiring_members = df_filtered[[
