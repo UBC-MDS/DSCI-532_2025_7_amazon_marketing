@@ -67,7 +67,7 @@ def register_chart_callbacks(app):
     )
     def update_engagement_graph(data):
         data = pd.DataFrame(data)
-        engagement_graph = alt.Chart(data, width='container', height='container').mark_bar(size=15).encode(
+        engagement_graph = (alt.Chart(data, width='container', height='container').mark_bar(size=15).encode(
             y=alt.Y('Engagement Metrics:N',
                     sort=['High', 'Medium', 'Low'],
                     title=None),
@@ -86,7 +86,7 @@ def register_chart_callbacks(app):
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
-        return engagement_graph
+        )).to_dict('vega')
+        return engagement_graph.to_dict(format='vega')
 
     
