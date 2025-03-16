@@ -2,7 +2,6 @@ from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from datetime import datetime
-from flask_caching import Cache
 
 from .data import data
 from .components import renewal_radiobutton, gender_radiobutton, age_range_slider, date_range_radio, download_csv
@@ -133,4 +132,4 @@ register_table_callbacks(app, df)
 register_chart_callbacks(app)
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug = True, port=5001)

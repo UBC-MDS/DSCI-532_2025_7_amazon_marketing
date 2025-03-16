@@ -12,6 +12,8 @@ cache = Cache(
     }
 )
 
+
+@cache.memoize()
 def register_table_callbacks(app, df):
     
     @app.callback(
@@ -25,7 +27,6 @@ def register_table_callbacks(app, df):
          Input("date-range-checklist", "value")]
     )
     
-    @cache.memoize()
     def update_users_and_table(renewal_values, gender_values, age_range, date_range_values):
         # Start with the entire dataset
         if renewal_values == "Both-Manual-Auto-renew":
@@ -75,7 +76,6 @@ def register_table_callbacks(app, df):
         prevent_initial_call=True
     )
     
-    @cache.memoize()
     def download_csv(n_clicks, renewal_values, gender_values, age_range, date_range_values):
         if not ctx.triggered or ctx.triggered[0]["prop_id"] != "download-csv-btn.n_clicks":
             raise PreventUpdate
