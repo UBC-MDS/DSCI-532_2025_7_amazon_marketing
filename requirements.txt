@@ -5,4 +5,7 @@ dash-vega-components==0.9.*
 altair==5.3.*
 pandas==2.2.*
 pyarrow==19.0.1
+vl-convert-python==1.7.*
 flask-caching==2.3.1
+vegafusion==1.6.*
+vegafusion-python-embed==1.6.*
