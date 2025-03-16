@@ -14,6 +14,7 @@ Expiring_Members_Table = (dash_table.DataTable(
                             style_cell={'textAlign': 'left',
                                         "fontSize": "12px",
                                         'height': "3.5vh"},
+                            filter_options={"case":"insensitive"}
                         ))
 
 Current_Members_Card = dbc.Card(dbc.CardBody(
