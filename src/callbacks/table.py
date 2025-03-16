@@ -43,7 +43,7 @@ def register_table_callbacks(app, df):
             (df['Gender'].isin(gender_values)) &
             (df['Renewal Status'].isin(renewal_values)) &
             (df['Age'].between(age_range[0], age_range[1])) &
-            (df['Months Till Expire'].between(0,date_range_values, 'right'))
+            (df['Months Till Expire'].between(0, date_range_values, 'right'))
         ]
         
         # Calculate current and expired users
