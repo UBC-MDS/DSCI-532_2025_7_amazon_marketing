@@ -2,17 +2,21 @@ from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
 import dash_vega_components as dvc
 from datetime import datetime
+from flask_caching import Cache
 
 from .data import data
-from .components import renewal_checkbox, gender_checkbox, age_range_slider, date_range_radio, download_csv
+from .components import renewal_radiobutton, gender_radiobutton, age_range_slider, date_range_radio, download_csv
 from .components import Expiring_Members_Table, Current_Members_Card, Expired_Members_Card
 from .components import Ratings_chart, Purchase_history_chart, Engagement_chart
 from .callbacks import register_chart_callbacks
-from .callbacks import register_table_callbacks
+from .callbacks import register_table_callbacks, cache
+
 
 # Initialize the Dash app
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
+
+cache.init_app(server)
 
 df = data
 app.title = 'Amazon Prime Dashboard'
@@ -29,12 +33,12 @@ app.layout = dbc.Container(
                         html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "1vh", "marginBottom": "2vh", "fontSize": "36px"}),
 
                         # Renewal checkboxes 
-                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
-                        (renewal_checkbox), 
+                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        (renewal_radiobutton), 
 
                         # Gender checkboxes 
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
-                        (gender_checkbox),
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        (gender_radiobutton),
 
                         # Age range slider
                         html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
@@ -129,4 +133,4 @@ register_table_callbacks(app, df)
 register_chart_callbacks(app)
 
 if __name__ == "__main__":
-    app.server.run(debug = True)
+    app.run(debug = True)
