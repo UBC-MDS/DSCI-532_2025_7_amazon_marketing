@@ -2,18 +2,30 @@ from dash import Input, Output, callback_context as ctx
 from dash import dcc
 from dash.exceptions import PreventUpdate
 import pandas as pd
+from flask_caching import Cache
+
+
+cache = Cache(
+    config={
+        'CACHE_TYPE': 'filesystem',
+        'CACHE_DIR': 'tmp'
+    }
+)
 
 def register_table_callbacks(app, df):
+    
     @app.callback(
         [Output("current-number-placeholder", "children"),
          Output("expiring-number-placeholder", "children"),
          Output("expiring-table-placeholder", "data"),
          Output("expiring-table-placeholder", "columns")],
-        [Input("renewal-checklist", "value"),
-         Input("gender-checklist", "value"),
+        [Input("renewal_radiobutton", "value"),
+         Input("gender_radiobutton", "value"),
          Input("age-range-filter", "value"),
          Input("date-range-checklist", "value")]
     )
+    
+    @cache.memoize()
     def update_users_and_table(renewal_values, gender_values, age_range, date_range_values):
         # Start with the entire dataset
         if renewal_values == "Both-Manual-Auto-renew":
@@ -56,12 +68,14 @@ def register_table_callbacks(app, df):
     @app.callback(
         Output("download-csv", "data"),
         Input("download-csv-btn", "n_clicks"),
-        Input("renewal-checklist", "value"),
-        Input("gender-checklist", "value"),
+        Input("renewal_radiobutton", "value"),
+        Input("gender_radiobutton", "value"),
         Input("age-range-filter", "value"),
         Input("date-range-checklist", "value"),
         prevent_initial_call=True
     )
+    
+    @cache.memoize()
     def download_csv(n_clicks, renewal_values, gender_values, age_range, date_range_values):
         if not ctx.triggered or ctx.triggered[0]["prop_id"] != "download-csv-btn.n_clicks":
             raise PreventUpdate

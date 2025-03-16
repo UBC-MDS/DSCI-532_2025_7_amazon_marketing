@@ -44,10 +44,22 @@ If you're interested in running the app locally or contributing to its developme
     pip install -r requirements.txt
     ```
 
-3.  **Run the app** Once the dependencies are installed, you can run the dashboard locally:
+3.  **Install our conda environment** by running the following command-line command:
 
     ``` bash
-    python src/app.py
+    conda env create -f environment.yaml
+    ```
+
+    Activate our conda environment by running the following command-line command:
+
+    ``` bash
+    conda activate amazon-prime
+    ```
+
+4.  **Run the app** Once the dependencies are installed, you can run the dashboard locally:
+
+    ``` bash
+    python -m src.app
     ```
 
 ## Contributing
