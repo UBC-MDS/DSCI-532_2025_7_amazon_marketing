@@ -15,6 +15,7 @@ app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 df = data
+app.title = 'Amazon Prime Dashboard'
 
 # Define the layout of the app
 app.layout = dbc.Container(
