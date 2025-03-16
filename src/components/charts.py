@@ -15,7 +15,8 @@ Ratings_chart = html.Div([
                     'fontSize': '16px'}),
     
     html.Div(dcc.Loading(
-        dvc.Vega(id='rating_graph', 
+        dvc.Vega(id='rating_graph',
+                 spec={},
                  style={"height": '24vh', 
                         "border": "1px solid lightgrey", 
                         "border-bottom-left-radius": "8px", 
@@ -40,6 +41,7 @@ Purchase_history_chart = html.Div([
     
     html.Div(dcc.Loading(
         dvc.Vega(id='purchase_graph', 
+                 spec={},
                  style={"height": '24vh', 
                         "border": "1px solid lightgrey",
                         "border-bottom-left-radius": "8px", 
@@ -64,6 +66,7 @@ Engagement_chart = html.Div([
     
     html.Div(dcc.Loading(
         dvc.Vega(id='engagement_graph', 
+                 spec={},
                  style={"height": '18vh', 
                         "border": "1px solid lightgrey", 
                         "border-bottom-left-radius": "8px", 
