@@ -29,27 +29,27 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         # Title
-                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "1vh", "marginBottom": "2vh", "fontSize": "36px"}),
+                        html.H2("Amazon Prime Dashboard", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginTop": "1vh", "marginBottom": "2vh", "fontSize": "2vw"}),
 
                         # Renewal checkboxes 
-                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        html.Label("Renewal Type", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "0.5vw", "fontSize": "1.3vw"}),
                         (renewal_radiobutton), 
 
                         # Gender checkboxes 
-                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "5px", "fontSize": "20px"}),
+                        html.Label("Gender", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "0.5vw", "fontSize": "1.3vw"}),
                         (gender_radiobutton),
 
                         # Age range slider
-                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
+                        html.Label("Age Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "1.3vw"}),
                         (age_range_slider),
                         
                         # Date range RadioItems 
-                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "20px"}),
+                        html.Label("Date Range", style={"fontWeight": "bold", "textAlign": "center", "display": "block", "marginBottom": "1vh", "fontSize": "1.3vw"}),
                         (date_range_radio),
                     ],
                     width=2,
-                    style={"backgroundColor": "#FF9900", "padding": "10px",
-                           'marginTop': '2vh', "borderRadius": "10px"},  
+                    style={"backgroundColor": "#FF9900", "padding": "1vw",
+                           'marginTop': '2vh', "borderRadius": "1vw"},  
                 ),
 
                 # Middle column
@@ -66,7 +66,7 @@ app.layout = dbc.Container(
                         dbc.Row(
                             [
                                 dbc.Col(html.H3("Upcoming Renewals Needed", 
-                                                style={"marginTop": "3vh"})),
+                                                style={"marginTop": "3vh", "fontSize": "1.5vw"})),
                                 (download_csv)
                             ]
                         ),
@@ -89,19 +89,18 @@ app.layout = dbc.Container(
                     width=5,
                     style={"backgroundColor": "#f8f9fa",
                            "paddingLeft": "2vw",
-                           'marginBottom': '2vh',
                            'paddingRight': '2vw',
                            }
                 ),
             ], 
             style={"backgroundColor": "#f8f9fa", "paddingTop": "0.5vh",
-                   'paddingLeft': "2vw", "borderRadius": "10px"} 
+                   'paddingLeft': "2vw", "borderRadius": "1vw"} 
         ),
         dbc.Row(
             [
                 dbc.Col(html.P(
                     "This app provides insights into user engagement, subscription renewal behavior, and content preferences among Amazon Prime users.",
-                    style={"fontSize": "12px", "textAlign": "center"}
+                    style={"fontSize": "0.8vw", "textAlign": "center"}
                 ), width="auto"),
             ],
             justify="center",
@@ -111,17 +110,17 @@ app.layout = dbc.Container(
             [
                 dbc.Col(html.P(
                     "Created by Daduica Julian, Yixuan Gao, and Mavis Wong.",
-                    style={"fontSize": "12px", "textAlign": "center"}
+                    style={"fontSize": "0.8vw", "textAlign": "center"}
                 ), width="auto"),
 
                 dbc.Col(html.P(
                     html.A("View the repository on GitHub", href="https://github.com/UBC-MDS/DSCI-532_2025_7_amazon_marketing", target="_blank"),
-                    style={"fontSize": "12px", "textAlign": "center"}
+                    style={"fontSize": "0.8vw", "textAlign": "center"}
                 ), width="auto"),
 
                 dbc.Col(html.P(
                     f"Latest update: {datetime.now().strftime('%B %d, %Y')}",
-                    style={"fontSize": "12px", "textAlign": "center"}
+                    style={"fontSize": "0.8vw", "textAlign": "center"}
                 ), width="auto"),
             ],
             justify="center"

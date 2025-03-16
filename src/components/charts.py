@@ -9,21 +9,21 @@ Ratings_chart = html.Div([
                     'paddingTop': '0.5vw', 
                     'paddingBottom': '0.5vw', 
                     'fontWeight': 'bold', 
-                    "border": "1px solid lightgrey", 
-                    "border-top-left-radius": "8px", 
-                    "border-top-right-radius": "8px", 
-                    'fontSize': '16px'}),
+                    "border": "0.1vw solid lightgrey", 
+                    "border-top-left-radius": "0.8vw", 
+                    "border-top-right-radius": "0.8vw", 
+                    'fontSize': '1.2vw'}),
     
     dvc.Vega(id='rating_graph',
              spec={},
              style={"height": '24vh', 
-                    "border": "1px solid lightgrey", 
-                    "border-bottom-left-radius": "8px", 
-                    "border-bottom-right-radius": "8px", 'backgroundColor': 'white', 
-                    'padding': '2vh', 
+                    "border": "0.1vw solid lightgrey", 
+                    "border-bottom-left-radius": "0.8vw", 
+                    "border-bottom-right-radius": "0.8vw", 'backgroundColor': 'white', 
+                    'padding': '1.5vh', 
                     'paddingRight': '3vh',
                     'width': '36.85vw'})
-    ], style={"marginTop": "1.5vh", 'width': '100%', 'height': '30vh'})
+    ], style={"marginTop": "1.5vh", 'width': '100%', 'height': '31vh'})
 
 
 Purchase_history_chart = html.Div([
@@ -33,21 +33,21 @@ Purchase_history_chart = html.Div([
                     'paddingTop': '0.5vw', 
                     'paddingBottom': '0.5vw', 
                     'fontWeight': 'bold',"border": 
-                    "1px solid lightgrey", 
-                    "border-top-left-radius": "8px", 
-                    "border-top-right-radius": "8px", ''
-                    'fontSize': '16px'}),
+                    "0.1vw solid lightgrey", 
+                    "border-top-left-radius": "0.8vw", 
+                    "border-top-right-radius": "0.8vw", ''
+                    'fontSize': '1.2vw'}),
     
     dvc.Vega(id='purchase_graph', 
                  spec={},
                  style={"height": '24vh', 
-                        "border": "1px solid lightgrey",
-                        "border-bottom-left-radius": "8px", 
-                        "border-bottom-right-radius": "8px", 'backgroundColor': 'white', 
-                        'padding': '2vh', 
+                        "border": "0.1vw solid lightgrey",
+                        "border-bottom-left-radius": "0.8vw", 
+                        "border-bottom-right-radius": "0.8vw", 'backgroundColor': 'white', 
+                        'padding': '1.5vh', 
                         'paddingRight': '3vh',
                         'width': '36.85vw'})
-    ], style = {"marginTop": "1vh", 'width': '100%', 'height': '30vh'})
+    ], style = {'width': '100%', 'height': '31vh'})
 
 
 Engagement_chart = html.Div([
@@ -57,19 +57,19 @@ Engagement_chart = html.Div([
                     'paddingTop': '0.5vw', 
                     'paddingBottom': '0.5vw', 
                     'fontWeight': 'bold', 
-                    "border": "1px solid lightgrey", 
-                    "border-top-left-radius": "8px", 
-                    "border-top-right-radius": "8px", 
-                    'fontSize': '16px'}),
+                    "border": "0.1vw solid lightgrey", 
+                    "border-top-left-radius": "0.8vw", 
+                    "border-top-right-radius": "0.8vw", 
+                    'fontSize': '1.2vw'}),
     
     dvc.Vega(id='engagement_graph', 
                  spec={},
                  style={"height": '18vh', 
-                        "border": "1px solid lightgrey", 
-                        "border-bottom-left-radius": "8px", 
-                        "border-bottom-right-radius": "8px", 'backgroundColor': 'white', 
-                        'padding': '2vh', 
+                        "border": "0.1vw solid lightgrey", 
+                        "border-bottom-left-radius": "0.8vw", 
+                        "border-bottom-right-radius": "0.8vw", 'backgroundColor': 'white', 
+                        'padding': '1.5vh', 
                         'paddingRight': '3vh',
                         'width': '36.85vw'})
-    ], style={"marginTop": "1vh", 'width': '100%', 'height': '25vh'})
+    ], style={'width': '100%', 'height': '26vh'})
 
