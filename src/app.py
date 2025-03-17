@@ -65,7 +65,7 @@ app.layout = dbc.Container(
                         # Table for expiring members
                         dbc.Row(
                             [
-                                dbc.Col(html.H3("Expiring Members", 
+                                dbc.Col(html.H3("Upcoming Renewals Needed", 
                                                 style={"marginTop": "30px"})),
                                 (download_csv)
                             ]

@@ -52,11 +52,11 @@ def register_table_callbacks(app, df):
 
         # Prepare the table for expiring members (only the selected columns)
         expiring_members = df_filtered[[
-            "User ID", "Name", "Email Address", "Membership End Date", "Gender", "Purchase History", "Engagement Metrics", "Feedback/Ratings"]]
+            "Membership End Date", "User ID", "Name", "Email Address", "Gender", "Purchase History", "Engagement Metrics", "Feedback/Ratings"]]
         
         columns_type = [
-            ("User ID", "numeric"), ("Name", "text"), 
-            ("Email Address","text"), ("Membership End Date", "datetime")
+            ("Membership End Date", "datetime"), ("User ID", "numeric"), 
+            ("Name", "text"), ("Email Address","text")
             ]
         columns = [
             {"name": col, "id": col, "type": type} for col, type in columns_type
@@ -68,35 +68,17 @@ def register_table_callbacks(app, df):
     @app.callback(
         Output("download-csv", "data"),
         Input("download-csv-btn", "n_clicks"),
-        Input("renewal_radiobutton", "value"),
-        Input("gender_radiobutton", "value"),
-        Input("age-range-filter", "value"),
-        Input("date-range-checklist", "value"),
+        Input("expiring-table-placeholder", "derived_virtual_data"),
         prevent_initial_call=True
     )
-    
-    @cache.memoize()
-    def download_csv(n_clicks, renewal_values, gender_values, age_range, date_range_values):
-        if not ctx.triggered or ctx.triggered[0]["prop_id"] != "download-csv-btn.n_clicks":
+    def download_csv(n_clicks, table_data):
+        if not ctx.triggered or "download-csv-btn.n_clicks" not in ctx.triggered[0]["prop_id"]:
             raise PreventUpdate
 
-        if renewal_values == "Both-Manual-Auto-renew":
-            renewal_values = ['Auto-renew', 'Manual']
-        else:
-            renewal_values = [renewal_values]
+        if table_data is None:
+            raise PreventUpdate
 
-        if gender_values == "Both-Male-Female":
-            gender_values = ['Male', 'Female']
-        else:
-            gender_values = [gender_values]
-        
-        df_filtered = df[
-            (df['Gender'].isin(gender_values)) &
-            (df['Renewal Status'].isin(renewal_values)) &
-            (df['Age'].between(age_range[0], age_range[1])) &
-            (df['Months Till Expire'] <= date_range_values)
-        ]
+        df_filtered = pd.DataFrame(table_data)
 
-        expiring_members = df_filtered[["User ID", "Name", "Email Address", "Membership End Date"]].reset_index(drop=True)
-        return dcc.send_data_frame(expiring_members.to_csv, "Expiring_Members.csv", index=False)
+        return dcc.send_data_frame(df_filtered.to_csv, "Expiring_Members.csv", index=False)
     
