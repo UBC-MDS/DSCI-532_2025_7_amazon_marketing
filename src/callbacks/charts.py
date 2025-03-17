@@ -9,31 +9,27 @@ def register_chart_callbacks(app):
     )
     def update_rating_graph(data):
         data = pd.DataFrame(data)
-        rating_graph = alt.Chart(data, width='container').transform_density(
+        rating_graph = alt.Chart(data, width='container', height='container').transform_density(
             'Feedback/Ratings',
             groupby=['Gender'],
             as_=['Feedback/Ratings', 'density']
         ).mark_line(strokeWidth=3).encode(
-            x=alt.X('Feedback/Ratings', title="Ratings"),
+            x=alt.X('Feedback/Ratings:Q', title="Ratings"),
             y=alt.Y('density:Q', title='Density'),
-            color=alt.Color('Gender',
+            color=alt.Color('Gender:N',
                             legend=alt.Legend(symbolStrokeWidth=5), scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender'),
-                     alt.Tooltip('Feedback/Ratings', title='Ratings'),
-                     alt.Tooltip('density:Q', title='Density')]
-        ).properties(
-            height=120,
+            tooltip=['Gender:N', 'Feedback/Ratings:Q', 'density:Q']
         ).configure_axis(
             labelFontSize=12,
             titleFontSize=14
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
+        )
 
-        return rating_graph
+        return rating_graph.to_dict()
 
     @app.callback(
         Output("purchase_graph", "spec"),
@@ -41,29 +37,26 @@ def register_chart_callbacks(app):
     )
     def update_purchase_graph(data):
         data = pd.DataFrame(data)
-        purchase_graph = alt.Chart(data, width='container').mark_bar(size=40).encode(
-            x=alt.X('Purchase History',
+        purchase_graph = alt.Chart(data, width='container', height='container').mark_bar(size=40).encode(
+            x=alt.X('Purchase History:N',
                     axis=alt.Axis(labelAngle=0),
                     title="Product Categories"),
             y=alt.Y('count()', title="Count"),
-            color=alt.Color('Gender',
+            color=alt.Color('Gender:N',
                             legend=alt.Legend(symbolSize=200),
                             scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender'),
-                     alt.Tooltip('count()', title='Count')],
+            tooltip=['Gender:N', 'count():Q'],
             order=alt.Order('Gender:N', sort='ascending')
-        ).properties(
-            height=120
         ).configure_axis(
             labelFontSize=12,
             titleFontSize=14
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
-        return purchase_graph
+        )
+        return purchase_graph.to_dict()
 
     @app.callback(
         Output("engagement_graph", "spec"),
@@ -71,28 +64,25 @@ def register_chart_callbacks(app):
     )
     def update_engagement_graph(data):
         data = pd.DataFrame(data)
-        engagement_graph = alt.Chart(data, width='container').mark_bar(size=15).encode(
-            y=alt.Y('Engagement Metrics',
+        engagement_graph = alt.Chart(data, width='container', height='container').mark_bar(size=15).encode(
+            y=alt.Y('Engagement Metrics:N',
                     sort=['High', 'Medium', 'Low'],
                     title=None),
             x=alt.X('count()', title='Count'),
-            color=alt.Color('Gender',
+            color=alt.Color('Gender:N',
                             legend=alt.Legend(symbolSize=200),
                             scale=alt.Scale(
                                 domain=['Male', 'Female'],
                                 range=['dodgerblue', 'crimson'])),
-            tooltip=[alt.Tooltip('Gender'),
-                     alt.Tooltip('count()', title='Count')],
+            tooltip=['Gender:N', 'count():Q'],
             order=alt.Order('Gender:N', sort='ascending')
-        ).properties(
-            height=80
         ).configure_axis(
             labelFontSize=12,
             titleFontSize=14
         ).configure_legend(
             labelFontSize=12,
             titleFontSize=14
-        ).to_dict()
-        return engagement_graph
+        )
+        return engagement_graph.to_dict()
 
     

@@ -12,6 +12,8 @@ cache = Cache(
     }
 )
 
+
+@cache.memoize()
 def register_table_callbacks(app, df):
     
     @app.callback(
@@ -25,7 +27,6 @@ def register_table_callbacks(app, df):
          Input("date-range-checklist", "value")]
     )
     
-    @cache.memoize()
     def update_users_and_table(renewal_values, gender_values, age_range, date_range_values):
         # Start with the entire dataset
         if renewal_values == "Both-Manual-Auto-renew":
@@ -42,13 +43,13 @@ def register_table_callbacks(app, df):
             (df['Gender'].isin(gender_values)) &
             (df['Renewal Status'].isin(renewal_values)) &
             (df['Age'].between(age_range[0], age_range[1])) &
-            (df['Months Till Expire'].between(0,date_range_values, 'right'))
+            (df['Months Till Expire'].between(0, date_range_values, 'right'))
         ]
         
         # Calculate current and expired users
-        current_users = df[df["Months Till Expire"] > 0].index.nunique()
+        current_users = df[df["Months Till Expire"] > 0]['User ID'].nunique()
         
-        expiring_users = df_filtered.index.nunique()
+        expiring_users = df_filtered['User ID'].nunique()
 
         # Prepare the table for expiring members (only the selected columns)
         expiring_members = df_filtered[[

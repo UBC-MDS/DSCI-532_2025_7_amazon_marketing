@@ -25,9 +25,9 @@ renewal_radiobutton = dbc.RadioItems(
                                 "flexDirection": "column",
                                 "alignItems": "start",  
                                 "justifyContent": "center",
-                                "fontSize": "16px",  
-                                "paddingLeft": "50px",  
-                                "marginBottom": "20px"
+                                "fontSize": "1rem",  
+                                "paddingLeft": "4vw",  
+                                "marginBottom": "2vh"
                             }
                         )
 
@@ -46,9 +46,9 @@ gender_radiobutton = dbc.RadioItems(
                                 "flexDirection": "column",
                                 "alignItems": "start",  
                                 "justifyContent": "center",
-                                "fontSize": "16px",  
-                                "paddingLeft": "50px",  
-                                "marginBottom": "20px"
+                                "fontSize": "1rem",  
+                                "paddingLeft": "4vw",  
+                                "marginBottom": "2vh"
                             }
                         )
 
@@ -59,9 +59,9 @@ age_range_slider = html.Div(dcc.RangeSlider(
                                 step=1,
                                 marks={i: str(i) for i in range(15, df["Age"].max(), 10)},
                                 value=[0, 100],  
-                                tooltip={"placement": "bottom", "always_visible": True, "style": {"fontSize": "16px"}},
+                                tooltip={"placement": "bottom", "always_visible": True, "style": {"fontSize": "0.9rem"}},
                             ), 
-                            style={"marginBottom": "20px"},
+                            style={"marginBottom": "2vh"},
                             )
 
 date_range_radio = dbc.RadioItems(
@@ -77,21 +77,22 @@ date_range_radio = dbc.RadioItems(
                             style={
                                 "display": "flex",
                                 "flexDirection": "column",
-                                "alignItems": "center",  
-                                "fontSize": "16px",  
-                                "marginBottom": "20px"
+                                "alignItems": "start",  
+                                "justifyContent": "center",
+                                "fontSize": "1rem",  
+                                "paddingLeft": "4vw",
+                                "marginBottom": "2vh"
                             }
                         )
 
 
 download_csv = dbc.Col(
     [
-        dbc.Button("Download CSV", id="download-csv-btn", color="primary", className="mt-2", size='sm'),
+        dbc.Button("Download CSV", id="download-csv-btn", color="primary", className='mt-3', size='sm'),
         dcc.Download(id="download-csv")
     ],
     width="auto", 
-    className="text-center",
-    style={"marginTop": "26px"}
+    className="text-center"
 )
 
 
