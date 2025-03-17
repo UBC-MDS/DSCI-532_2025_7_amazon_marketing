@@ -15,7 +15,26 @@ cache = Cache(
 
 @cache.memoize()
 def register_table_callbacks(app, df):
-    
+    """
+    Registers callbacks for updating user table data in Dash application.
+
+    This function sets up two callbacks:
+    1. update_users_and_table: Updates the number of current and expiring users, as well as the table data,
+       based on filters applied to the dataset (renewal status, gender, age range, and months till expiration).
+    2. download_csv: Enables downloading the filtered table data as a CSV file.
+
+    Parameters:
+    -----------
+    app : dash.Dash
+        The Dash application to which the callbacks will be registered.
+    df : pandas.DataFrame
+        The dataset containing user information.
+
+    Returns:
+    --------
+    None
+    """
+        
     @app.callback(
         [Output("current-number-placeholder", "children"),
          Output("expiring-number-placeholder", "children"),

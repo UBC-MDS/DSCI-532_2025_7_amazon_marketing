@@ -3,6 +3,25 @@ import altair as alt
 import pandas as pd
 
 def register_chart_callbacks(app):
+    """
+    Registers callbacks for updating Altair charts in a Dash application.
+
+    This function sets up three callbacks that update different charts based on the data
+    provided by the expiring-table-placeholder component. The charts include:
+    - A density plot for ratings grouped by gender.
+    - A bar chart for purchase history counts grouped by gender.
+    - A bar chart for engagement levels counts grouped by gender.
+
+    Parameters:
+    -----------
+    app : dash.Dash
+        The Dash application to which the callbacks will be registered.
+
+    Returns:
+    --------
+    None
+    """
+    
     @app.callback(
         Output("rating_graph", "spec"),
         Input("expiring-table-placeholder", "derived_virtual_data")
@@ -85,4 +104,3 @@ def register_chart_callbacks(app):
         )
         return engagement_graph.to_dict()
 
-    
